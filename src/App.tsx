@@ -7,7 +7,6 @@ import EstimatedFees from "./containers/EstimatedFees";
 import Header from "./containers/Header";
 import Navbar from "./containers/Navbar";
 import LiquidityPositionChart from "./containers/LiquidityPositionChart";
-import SelectPairModal from "./containers/select-pair/SelectPairModal";
 import Setting from "./containers/setting/Setting";
 import ContextProvider from "./context/ContextProvider";
 import { PrimaryBlockButton } from "./common/buttons";
@@ -15,7 +14,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import DonateModal from "./containers/DonateModal";
+import AddressModal from "./containers/AddressModal";
 
 const BodyContainer = styled.div`
   width: 900px;
@@ -111,6 +110,8 @@ function App() {
       )}
       {(isEnter || screenWidth > 960) && (
         <>
+          <AddressModal />
+
           <Navbar />
           <BodyContainer>
             <Header />

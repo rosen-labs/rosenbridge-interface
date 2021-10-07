@@ -1,4 +1,6 @@
 import styled, { keyframes } from "styled-components";
+import { useModalContext } from "../context/modal/modalContext";
+import { ModalActionType } from "../context/modal/modalReducer";
 import { colors } from "../utils/styled";
 
 const NavbarContainer = styled.div`
@@ -62,7 +64,7 @@ const blinking = keyframes`
 const Address = styled.div`
   background: ${colors.lightBlue};
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 7px;
   padding: 3px 7px;
   margin-left: 20px;
   cursor: pointer;
@@ -90,6 +92,8 @@ const Menubar = styled.div`
 `;
 
 const Navbar = () => {
+  const { dispatch } = useModalContext();
+
   return (
     <NavbarContainer>
       <Logo>Rosen Bridge</Logo>
@@ -98,7 +102,14 @@ const Navbar = () => {
           <img src="https://polygon.technology/media-kit/matic-token-icon.png" />
           <span>Polygon Mainnet</span>
         </CurrentNetwork>
-        <Address>
+        <Address
+          onClick={() => {
+            dispatch({
+              type: ModalActionType.SET_ADDRESS_MODAL_STATE,
+              payload: true,
+            });
+          }}
+        >
           <span>0x68fc...C1a5</span>
           <span>
             <div>1</div>

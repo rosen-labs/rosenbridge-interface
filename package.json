@@ -43,8 +43,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "yarn generate && react-scripts start",
-    "build": "yarn generate && react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "deploy": "react-scripts build && firebase deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

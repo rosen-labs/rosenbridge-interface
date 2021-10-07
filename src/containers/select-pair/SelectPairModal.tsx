@@ -223,10 +223,6 @@ const SelectPairModal = () => {
     });
 
     setIsSubmitLoading(false);
-    modalContext.dispatch({
-      type: ModalActionType.SET_SELECT_PAIR_MODAL_STATE,
-      payload: false,
-    });
   };
 
   const fetchPools = async () => {
@@ -302,11 +298,7 @@ const SelectPairModal = () => {
 
   return (
     <>
-      <Modal
-        style={ModalStyle}
-        isOpen={modalContext.state.isSelectPairModalOpen}
-        contentLabel="Example Modal"
-      >
+      <Modal style={ModalStyle} isOpen={false} contentLabel="Example Modal">
         {showSelectTokenPage && (
           <>
             <GoBack>

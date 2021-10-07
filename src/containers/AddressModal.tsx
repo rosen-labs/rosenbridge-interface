@@ -91,14 +91,14 @@ const DonationBox = styled.div`
   }
 `;
 
-const DonateModal = () => {
+const AddressModal = () => {
   const { state, dispatch } = useModalContext();
 
   return (
     <>
       <Modal
         style={ModalStyle}
-        isOpen={state.isDonateModalOpen}
+        isOpen={state.isAddressModalOpen}
         contentLabel="DONATE"
       >
         <>
@@ -107,7 +107,7 @@ const DonateModal = () => {
             <span
               onClick={() => {
                 dispatch({
-                  type: ModalActionType.SET_DONATE_MODAL_STATE,
+                  type: ModalActionType.SET_ADDRESS_MODAL_STATE,
                   payload: false,
                 });
               }}
@@ -166,4 +166,4 @@ const DonateModal = () => {
   );
 };
 
-export default DonateModal;
+export default AddressModal;

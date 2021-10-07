@@ -100,16 +100,7 @@ const Header = () => {
         >
           Swap Current Pair
         </Button>
-        <PrimaryButton
-          onClick={() => {
-            modalContext.dispatch({
-              type: ModalActionType.SET_SELECT_PAIR_MODAL_STATE,
-              payload: true,
-            });
-          }}
-        >
-          Change Pair
-        </PrimaryButton>
+        <PrimaryButton onClick={() => {}}>Change Pair</PrimaryButton>
       </div>
     </HeaderContainer>
   );
