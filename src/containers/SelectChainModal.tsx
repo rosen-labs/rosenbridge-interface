@@ -66,21 +66,19 @@ const SearchInput = styled.input`
     background: ${withOpacity(darkBlueTemplate, 0.07)};
   }
 `;
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background: ${colors.lightBlue};
-`;
 const Scrollable = styled.div`
   height: 300px;
   overflow: scroll;
 `;
-const TokenItem = styled.div`
+const ChainItem = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
   transition: 0.3s;
   padding: 5px 15px;
+  border-radius: 12px;
+  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  margin-bottom: 7px;
 
   &:hover {
     background: ${colors.lightBlue};
@@ -120,22 +118,22 @@ const TokenItem = styled.div`
   }
 `;
 
-const SelectTokenModal = () => {
+const SelectChainModal = () => {
   const { state, dispatch } = useModalContext();
 
   return (
     <>
       <Modal
         style={ModalStyle}
-        isOpen={state.isSelectTokenModalOpen}
-        contentLabel="Select Token"
+        isOpen={state.isSelectFromChainModalOpen}
+        contentLabel="Select Chain"
       >
         <Header>
-          <span>Select Token</span>
+          <span>Select Chain</span>
           <span
             onClick={() => {
               dispatch({
-                type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
+                type: ModalActionType.SET_SELECT_FROM_CHAIN_MODAL_STATE,
                 payload: false,
               });
             }}
@@ -144,105 +142,84 @@ const SelectTokenModal = () => {
           </span>
         </Header>
         <Container>
-          <SearchInput placeholder="Search name or paste address" />
+          <Scrollable>
+            <ChainItem>
+              <img
+                src="https://vee.finance/static/media/ETH.df265e36.svg"
+                alt="ETH"
+              />
+              <div>
+                <div>
+                  <h5>Ethereum</h5>
+                  <span>Ethereum Mainnet</span>
+                </div>
+              </div>
+            </ChainItem>
+            <ChainItem>
+              <img
+                src="https://vee.finance/static/media/ETH.df265e36.svg"
+                alt="ETH"
+              />
+              <div>
+                <div>
+                  <h5>Ethereum</h5>
+                  <span>Ethereum Mainnet</span>
+                </div>
+              </div>
+            </ChainItem>
+            <ChainItem>
+              <img
+                src="https://vee.finance/static/media/ETH.df265e36.svg"
+                alt="ETH"
+              />
+              <div>
+                <div>
+                  <h5>Ethereum</h5>
+                  <span>Ethereum Mainnet</span>
+                </div>
+              </div>
+            </ChainItem>
+            <ChainItem>
+              <img
+                src="https://vee.finance/static/media/ETH.df265e36.svg"
+                alt="ETH"
+              />
+              <div>
+                <div>
+                  <h5>Ethereum</h5>
+                  <span>Ethereum Mainnet</span>
+                </div>
+              </div>
+            </ChainItem>
+            <ChainItem>
+              <img
+                src="https://vee.finance/static/media/ETH.df265e36.svg"
+                alt="ETH"
+              />
+              <div>
+                <div>
+                  <h5>Ethereum</h5>
+                  <span>Ethereum Mainnet</span>
+                </div>
+              </div>
+            </ChainItem>
+            <ChainItem>
+              <img
+                src="https://vee.finance/static/media/ETH.df265e36.svg"
+                alt="ETH"
+              />
+              <div>
+                <div>
+                  <h5>Ethereum</h5>
+                  <span>Ethereum Mainnet</span>
+                </div>
+              </div>
+            </ChainItem>
+          </Scrollable>
         </Container>
-        <Divider />
-        <Scrollable>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-        </Scrollable>
       </Modal>
     </>
   );
 };
 
-export default SelectTokenModal;
+export default SelectChainModal;

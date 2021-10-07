@@ -204,7 +204,14 @@ const TransferWidget = () => {
         </div>
       </TokenAmount>
       <Grid>
-        <SelectChain>
+        <SelectChain
+          onClick={() => {
+            modalContext.dispatch({
+              type: ModalActionType.SET_SELECT_FROM_CHAIN_MODAL_STATE,
+              payload: true,
+            });
+          }}
+        >
           <span>From</span>
           <div>
             <div>

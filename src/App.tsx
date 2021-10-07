@@ -10,6 +10,7 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import AccountModal from "./containers/AccountModal";
 import TransferWidget from "./containers/TransferWidget";
 import SelectTokenModal from "./containers/SelectTokenModal";
+import SelectChainModal from "./containers/SelectChainModal";
 
 const BodyContainer = styled.div`
   width: 400px;
@@ -101,6 +102,7 @@ function App() {
         <>
           <AccountModal />
           <SelectTokenModal />
+          <SelectChainModal />
 
           <Navbar />
           <BodyContainer>

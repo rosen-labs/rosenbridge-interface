@@ -4,10 +4,12 @@ import { ModalContextAction, modalContextReducer } from "./modalReducer";
 export interface ModalContextState {
   isAccountModalOpen: boolean;
   isSelectTokenModalOpen: boolean;
+  isSelectFromChainModalOpen: boolean;
 }
 const initialState: ModalContextState = {
   isAccountModalOpen: false,
   isSelectTokenModalOpen: false,
+  isSelectFromChainModalOpen: false,
 };
 
 interface ModalContextProviderProps {
