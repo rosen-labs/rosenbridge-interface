@@ -1,4 +1,5 @@
-import { DownOutlined, RightOutlined } from "@ant-design/icons";
+import { DownOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
+import { useState } from "react";
 import styled from "styled-components";
 import { PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
@@ -142,8 +143,35 @@ const TokenAmountInput = styled.input`
     margin: 0;
   }
 `;
+const EditButton = styled.div`
+  display: inline-block;
+  cursor: pointer;
+  color: rgb(24, 144, 255);
+  margin-right: 7px;
+`;
+const RecipientInput = styled.div`
+  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  border-radius: 16px;
+  margin-bottom: 12px;
+  padding: 7px 12px;
+
+  & > div {
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+
+  & > input {
+    border: 0;
+    outline: none;
+    text-align: right;
+    width: 100%;
+    font-size: 1rem;
+  }
+`;
 
 const TransferWidget = () => {
+  const [isEditRecipient, setIsEditRecipient] = useState(false);
+
   return (
     <Container>
       <h2>Transfer Token</h2>
@@ -203,10 +231,31 @@ const TransferWidget = () => {
           <div>100.5123 USDT</div>
         </div>
         <div>
-          <div>Recipient</div>
+          <div>Sender</div>
           <div>0x68fc...C1a5</div>
         </div>
+        {!isEditRecipient && (
+          <div>
+            <div>Recipient</div>
+            <div>
+              <EditButton
+                onClick={() => {
+                  setIsEditRecipient(true);
+                }}
+              >
+                <EditOutlined /> Edit
+              </EditButton>
+              <span>0x68fc...C1a5</span>
+            </div>
+          </div>
+        )}
       </TransactionDetails>
+      {isEditRecipient && (
+        <RecipientInput>
+          <div>Recipient Address</div>
+          <input placeholder="0x0000000000000000000000000000000000000000" />
+        </RecipientInput>
+      )}
       <PrimaryBlockButton>Confirm Transaction</PrimaryBlockButton>
     </Container>
   );
