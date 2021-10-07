@@ -234,10 +234,10 @@ const TransferWidget = () => {
           <div>Sender</div>
           <div>0x68fc...C1a5</div>
         </div>
-        {!isEditRecipient && (
+        <div>
+          <div>Recipient</div>
           <div>
-            <div>Recipient</div>
-            <div>
+            {!isEditRecipient && (
               <EditButton
                 onClick={() => {
                   setIsEditRecipient(true);
@@ -245,10 +245,10 @@ const TransferWidget = () => {
               >
                 <EditOutlined /> Edit
               </EditButton>
-              <span>0x68fc...C1a5</span>
-            </div>
+            )}
+            0x68fc...C1a5
           </div>
-        )}
+        </div>
       </TransactionDetails>
       {isEditRecipient && (
         <RecipientInput>
