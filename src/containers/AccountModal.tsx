@@ -2,16 +2,25 @@ import Modal from "react-modal";
 import { useModalContext } from "../context/modal/modalContext";
 import styled from "styled-components";
 import { ModalActionType } from "../context/modal/modalReducer";
-import { blueTemplate, colors, withOpacity } from "../utils/styled";
 import {
+  blueTemplate,
+  colors,
+  darkBlueTemplate,
+  withOpacity,
+} from "../utils/styled";
+import {
+  ArrowLeftOutlined,
   ArrowRightOutlined,
   CheckCircleTwoTone,
   CloseCircleTwoTone,
   CloseOutlined,
   CopyOutlined,
+  FieldTimeOutlined,
   LinkOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
+import { useState } from "react";
+import { Timeline } from "antd";
 
 const ModalStyle = {
   overlay: {
@@ -129,9 +138,44 @@ const Transaction = styled.div`
     color: ${colors.fadedBlue};
   }
 `;
+const TimelineContainer = styled.div`
+  padding: 15px;
+  padding-bottom: 0;
+  margin-top: 15px;
+`;
+const TransactionDetail = styled.div`
+  background: ${colors.lightBlue};
+  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  border-radius: 16px;
+  padding: 15px;
+
+  & > h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+  & > div {
+    font-size: 0.8rem;
+    margin-top: 7px;
+    color: ${colors.fadedBlue};
+  }
+  & > p {
+    margin: 0;
+    border-top: 1px solid ${withOpacity(blueTemplate, 0.1)};
+    margin-top: 15px;
+    padding-top: 15px;
+  }
+`;
+
+const ProcessingStatus = () => (
+  <>
+    <LoadingOutlined style={{ color: colors.blue, marginRight: 2 }} />{" "}
+    <span style={{ color: colors.blue }}>Processing...</span>
+  </>
+);
 
 const AccountModal = () => {
   const { state, dispatch } = useModalContext();
+  const [isOpenDetail, setIsOpenDetail] = useState(false);
 
   return (
     <>
@@ -142,7 +186,15 @@ const AccountModal = () => {
       >
         <>
           <Header>
-            <span>Account</span>
+            {isOpenDetail && (
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => setIsOpenDetail(false)}
+              >
+                <ArrowLeftOutlined /> Transaction Details
+              </span>
+            )}
+            {!isOpenDetail && <span>Account</span>}
             <span
               onClick={() => {
                 dispatch({
@@ -154,80 +206,109 @@ const AccountModal = () => {
               <CloseOutlined />
             </span>
           </Header>
-          <Container>
-            <Padding>
-              <AccountDetail>
-                <div>
-                  <div>Connected with MetaMask</div>
-                  <div>Disconnect</div>
-                </div>
-                <div>0x68fc...C1a5</div>
-                <div>
-                  <a
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        "0x79A375feFbF90878502eADBA4A89697896B60c4d"
-                      );
-                    }}
-                  >
-                    <CopyOutlined /> Copy Address
-                  </a>
-                  <a
-                    target="_blank"
-                    href="https://etherscan.io/address/0x79A375feFbF90878502eADBA4A89697896B60c4d"
-                  >
-                    <LinkOutlined /> View on Explorer
-                  </a>
-                </div>
-              </AccountDetail>
-            </Padding>
-            <TransactionHistoryContainer>
+          {isOpenDetail && (
+            <Container>
               <Padding>
-                <h2>Transaction History</h2>
-                <Transaction>
-                  <h3>
-                    <span>Transfer 100.23 USDT</span>
-                    <div>
-                      <LoadingOutlined
-                        style={{ color: colors.blue, marginRight: 2 }}
-                      />{" "}
-                      <span style={{ color: colors.blue }}>Processing...</span>
-                    </div>
-                  </h3>
+                <TransactionDetail>
+                  <h2>Transfer 10.5213 USDT</h2>
                   <div>
-                    <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                    <span style={{ marginRight: 5 }}>
+                      <FieldTimeOutlined /> 10:30, 15 Sep 2021
+                    </span>
+                    <br />
                     Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
                   </div>
-                </Transaction>
-                <Transaction>
-                  <h3>
-                    <span>Transfer 100.23 USDT</span>
-                    <div>
-                      <CheckCircleTwoTone twoToneColor={colors.green} />{" "}
-                      <span style={{ color: colors.green }}>Transfered</span>
-                    </div>
-                  </h3>
-                  <div>
-                    <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
-                    Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
-                  </div>
-                </Transaction>
-                <Transaction>
-                  <h3>
-                    <span>Transfer 100.23 USDT</span>
-                    <div>
-                      <CloseCircleTwoTone twoToneColor={colors.pink} />{" "}
-                      <span style={{ color: colors.pink }}>Failed</span>
-                    </div>
-                  </h3>
-                  <div>
-                    <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
-                    Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
-                  </div>
-                </Transaction>
+                  <p>
+                    <ProcessingStatus />
+                  </p>
+                </TransactionDetail>
+                <TimelineContainer>
+                  <Timeline pending="Recording...">
+                    <Timeline.Item>
+                      Create a services site 2015-09-01
+                    </Timeline.Item>
+                    <Timeline.Item>
+                      Solve initial network problems 2015-09-01
+                    </Timeline.Item>
+                    <Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
+                  </Timeline>
+                </TimelineContainer>
               </Padding>
-            </TransactionHistoryContainer>
-          </Container>
+            </Container>
+          )}
+          {!isOpenDetail && (
+            <Container>
+              <Padding>
+                <AccountDetail>
+                  <div>
+                    <div>Connected with MetaMask</div>
+                    <div>Disconnect</div>
+                  </div>
+                  <div>0x68fc...C1a5</div>
+                  <div>
+                    <a
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          "0x79A375feFbF90878502eADBA4A89697896B60c4d"
+                        );
+                      }}
+                    >
+                      <CopyOutlined /> Copy Address
+                    </a>
+                    <a
+                      target="_blank"
+                      href="https://etherscan.io/address/0x79A375feFbF90878502eADBA4A89697896B60c4d"
+                    >
+                      <LinkOutlined /> View on Explorer
+                    </a>
+                  </div>
+                </AccountDetail>
+              </Padding>
+              <TransactionHistoryContainer>
+                <Padding>
+                  <h2>Transaction History</h2>
+                  <Transaction onClick={() => setIsOpenDetail(true)}>
+                    <h3>
+                      <span>Transfer 100.23 USDT</span>
+                      <div>
+                        <ProcessingStatus />
+                      </div>
+                    </h3>
+                    <div>
+                      <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                      Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
+                    </div>
+                  </Transaction>
+                  <Transaction>
+                    <h3>
+                      <span>Transfer 100.23 USDT</span>
+                      <div>
+                        <CheckCircleTwoTone twoToneColor={colors.green} />{" "}
+                        <span style={{ color: colors.green }}>Transfered</span>
+                      </div>
+                    </h3>
+                    <div>
+                      <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                      Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
+                    </div>
+                  </Transaction>
+                  <Transaction>
+                    <h3>
+                      <span>Transfer 100.23 USDT</span>
+                      <div>
+                        <CloseCircleTwoTone twoToneColor={colors.pink} />{" "}
+                        <span style={{ color: colors.pink }}>Failed</span>
+                      </div>
+                    </h3>
+                    <div>
+                      <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                      Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
+                    </div>
+                  </Transaction>
+                </Padding>
+              </TransactionHistoryContainer>
+            </Container>
+          )}
         </>
       </Modal>
     </>

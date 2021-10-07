@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useWindowWidth } from "@react-hook/window-size";
 import { Br } from "./common/atomic";
 import CorrelationChart from "./containers/CorrelationChart";
-import Credit from "./containers/Credit";
 import EstimatedFees from "./containers/EstimatedFees";
 import Header from "./containers/Header";
 import Navbar from "./containers/Navbar";
@@ -127,8 +126,6 @@ function App() {
                 <CorrelationChart />
               </div>
             </ContentContainer>
-
-            <Credit />
           </BodyContainer>
         </>
       )}
