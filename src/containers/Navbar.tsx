@@ -1,30 +1,28 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
-import styled from "styled-components";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { DangerButton } from "../common/buttons";
-import { useModalContext } from "../context/modal/modalContext";
-import { ModalActionType } from "../context/modal/modalReducer";
+import styled, { keyframes } from "styled-components";
+import { colors } from "../utils/styled";
 
 const NavbarContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background: rgb(0, 0, 0, 0.9);
+  padding: 12px 25px;
+  background: white;
   position: fixed;
   width: 100vw;
   top: 0;
   z-index: 9999;
+
+  box-shadow: 0px 4px 70px 0px rgba(0, 0, 0, 0.07);
+  -webkit-box-shadow: 0px 4px 70px 0px rgba(0, 0, 0, 0.07);
+  -moz-box-shadow: 0px 4px 70px 0px rgba(0, 0, 0, 0.07);
 `;
 
 const Logo = styled.h1`
   color: white;
   margin: 0;
-  font-weight: bold;
+  font-weight: 600 !important;
   font-size: 1.2rem;
-  color: #ddd;
+  color: ${colors.darkBlue};
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -36,57 +34,76 @@ const Logo = styled.h1`
   }
 `;
 
-const Menubar = styled.a`
+const CurrentNetwork = styled.div`
   display: flex;
   align-items: center;
 
-  & a {
-    color: #888;
-    font-size: 1.2rem;
-    margin-right: 15px;
-
-    &:hover {
-      color: #bbb;
-    }
+  & img {
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    margin-right: 5px;
   }
 `;
 
-const Navbar = () => {
-  const { dispatch } = useModalContext();
+const blinking = keyframes`
+  0% {
+    background: ${colors.blue}
+  }
 
+  50% {
+    background: #166cbd;
+  }
+  
+  100% {
+    background: ${colors.blue}
+  }
+`;
+const Address = styled.div`
+  background: ${colors.lightBlue};
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 3px 7px;
+  margin-left: 20px;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid ${colors.lightBlue};
+  }
+
+  & > span:nth-child(2) {
+    text-align: center;
+    background: ${colors.blue};
+    color: white;
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+    border-radius: 50%;
+    animation: ${blinking} 1s linear infinite;
+    margin-left: 7px;
+  }
+`;
+
+const Menubar = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Navbar = () => {
   return (
     <NavbarContainer>
-      <Logo>
-        <span>🦄</span> UniswapCalculator
-      </Logo>
+      <Logo>Rosen Bridge</Logo>
       <Menubar>
-        <a
-          href="https://twitter.com/chunza2542"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faTwitter} />
-        </a>
-        <a
-          href="https://github.com/chunza2542/uniswapv3-calculator"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faGithub} />
-        </a>
-        <a href="mailto:hello@thechun.dev">
-          <FontAwesomeIcon icon={faEnvelope} />
-        </a>
-        <DangerButton
-          onClick={() => {
-            dispatch({
-              type: ModalActionType.SET_DONATE_MODAL_STATE,
-              payload: true,
-            });
-          }}
-        >
-          Donate
-        </DangerButton>
+        <CurrentNetwork>
+          <img src="https://polygon.technology/media-kit/matic-token-icon.png" />
+          <span>Polygon Mainnet</span>
+        </CurrentNetwork>
+        <Address>
+          <span>0x68fc...C1a5</span>
+          <span>
+            <div>1</div>
+          </span>
+        </Address>
       </Menubar>
     </NavbarContainer>
   );
