@@ -2,10 +2,10 @@ import React from "react";
 import { ModalContextAction, modalContextReducer } from "./modalReducer";
 
 export interface ModalContextState {
-  isAddressModalOpen: boolean;
+  isAccountModalOpen: boolean;
 }
 const initialState: ModalContextState = {
-  isAddressModalOpen: false,
+  isAccountModalOpen: false,
 };
 
 interface ModalContextProviderProps {

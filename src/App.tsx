@@ -14,7 +14,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import AddressModal from "./containers/AddressModal";
+import AccountModal from "./containers/AccountModal";
 
 const BodyContainer = styled.div`
   width: 900px;
@@ -110,7 +110,7 @@ function App() {
       )}
       {(isEnter || screenWidth > 960) && (
         <>
-          <AddressModal />
+          <AccountModal />
 
           <Navbar />
           <BodyContainer>

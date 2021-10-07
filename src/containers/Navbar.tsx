@@ -105,7 +105,7 @@ const Navbar = () => {
         <Address
           onClick={() => {
             dispatch({
-              type: ModalActionType.SET_ADDRESS_MODAL_STATE,
+              type: ModalActionType.SET_ACCOUNT_MODAL_STATE,
               payload: true,
             });
           }}
