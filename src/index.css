@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  width: 100vw;
+  background-image: linear-gradient(
+      217deg,
+      rgba(32, 22, 31, 0.8),
+      rgba(0, 0, 0, 0) 70.71%
+    ),
+    linear-gradient(127deg, rgb(36, 12, 30, 0.8), rgba(0, 0, 0, 0) 70.71%),
+    linear-gradient(336deg, rgba(1, 21, 48, 0.8), rgba(0, 0, 0, 0) 70.71%);
+  background-color: #000;
+  background-attachment: fixed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.dollar {
+  font-family: "Gowun Batang", serif !important;
+}
+
+.thumb-red-0,
+.thumb-red-1 {
+  background-color: rgb(247, 2, 119) !important;
+}
+.thumb-green-0,
+.thumb-green-1 {
+  background-color: rgba(37, 175, 96, 1) !important;
+}
