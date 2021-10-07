@@ -9,11 +9,12 @@ import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import AccountModal from "./containers/AccountModal";
 import TransferWidget from "./containers/TransferWidget";
+import SelectTokenModal from "./containers/SelectTokenModal";
 
 const BodyContainer = styled.div`
   width: 400px;
   margin: auto auto;
-  padding-top: 150px;
+  padding-top: 15vh;
 `;
 const MobileNotSupportScreen = styled.div`
   width: 100vw;
@@ -99,6 +100,7 @@ function App() {
       {(isEnter || screenWidth > 550) && (
         <>
           <AccountModal />
+          <SelectTokenModal />
 
           <Navbar />
           <BodyContainer>

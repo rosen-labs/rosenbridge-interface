@@ -3,6 +3,8 @@ import { useState } from "react";
 import styled from "styled-components";
 import { PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
+import { useModalContext } from "../context/modal/modalContext";
+import { ModalActionType } from "../context/modal/modalReducer";
 
 const Container = styled.div`
   background: white;
@@ -171,13 +173,21 @@ const RecipientInput = styled.div`
 
 const TransferWidget = () => {
   const [isEditRecipient, setIsEditRecipient] = useState(false);
+  const modalContext = useModalContext();
 
   return (
     <Container>
       <h2>Transfer Token</h2>
       <TokenAmount>
         <div style={{ marginBottom: 5 }}>
-          <SelectToken>
+          <SelectToken
+            onClick={() => {
+              modalContext.dispatch({
+                type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
+                payload: true,
+              });
+            }}
+          >
             <img src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png" />
             <span>DAI</span>
             <span style={{ marginLeft: 7, fontSize: "0.8rem" }}>

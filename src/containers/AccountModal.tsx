@@ -198,7 +198,6 @@ const Chain = styled.div`
   border-radius: 12px;
   color: ${colors.darkBlue};
   padding: 7px 12px;
-  cursor: pointer;
 
   & > span {
     font-weight: 400;
