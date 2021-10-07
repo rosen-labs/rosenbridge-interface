@@ -74,6 +74,7 @@ const AccountDetail = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 0.8rem;
 
     & > div:nth-child(1) {
       color: ${colors.fadedBlue};
@@ -89,11 +90,12 @@ const AccountDetail = styled.div`
   }
 
   & > div:nth-child(2) {
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 7px 0;
   }
 
   & > div:nth-child(3) {
+    font-size: 0.8rem;
     & a {
       margin-right: 15px;
       color: ${colors.fadedBlue};
@@ -130,11 +132,11 @@ const Transaction = styled.div`
     display: flex;
     justify-content: space-between;
     & > div {
-      font-size: 0.6rem;
+      font-size: 0.65rem;
     }
   }
   & > div {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     color: ${colors.fadedBlue};
   }
 `;
