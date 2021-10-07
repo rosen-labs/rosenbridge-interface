@@ -48,15 +48,15 @@ const CurrentNetwork = styled.div`
 
 const blinking = keyframes`
   0% {
-    background: ${colors.blue}
+    background: #F95738;
   }
 
   50% {
-    background: #166cbd;
+    background: #ee964b;
   }
   
   100% {
-    background: ${colors.blue}
+    background: #F95738;
   }
 `;
 const Address = styled.div`
