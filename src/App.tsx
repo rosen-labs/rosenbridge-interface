@@ -1,12 +1,6 @@
 import styled from "styled-components";
 import { useWindowWidth } from "@react-hook/window-size";
-import { Br } from "./common/atomic";
-import CorrelationChart from "./containers/CorrelationChart";
-import EstimatedFees from "./containers/EstimatedFees";
-import Header from "./containers/Header";
 import Navbar from "./containers/Navbar";
-import LiquidityPositionChart from "./containers/LiquidityPositionChart";
-import Setting from "./containers/setting/Setting";
 import ContextProvider from "./context/ContextProvider";
 import { PrimaryBlockButton } from "./common/buttons";
 import { useState } from "react";
@@ -19,12 +13,6 @@ const BodyContainer = styled.div`
   width: 900px;
   margin: auto auto;
   padding-top: 100px;
-`;
-const ContentContainer = styled.div`
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  grid-gap: 25px;
-  margin-top: 25px;
 `;
 const MobileNotSupportScreen = styled.div`
   width: 100vw;
@@ -112,21 +100,7 @@ function App() {
           <AccountModal />
 
           <Navbar />
-          <BodyContainer>
-            <Header />
-            <ContentContainer>
-              <div>
-                <EstimatedFees />
-                <Br />
-                <Setting />
-              </div>
-              <div>
-                <LiquidityPositionChart />
-                <Br />
-                <CorrelationChart />
-              </div>
-            </ContentContainer>
-          </BodyContainer>
+          <BodyContainer>HELLO?</BodyContainer>
         </>
       )}
     </ContextProvider>
