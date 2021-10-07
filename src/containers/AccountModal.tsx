@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { blueTemplate, colors, withOpacity } from "../utils/styled";
 import {
+  ArrowRightOutlined,
   CheckCircleTwoTone,
   CloseCircleTwoTone,
   CloseOutlined,
@@ -195,7 +196,7 @@ const AccountModal = () => {
                   </h3>
                   <div>
                     <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
-                    Click to view transaction details
+                    Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
                   </div>
                 </Transaction>
                 <Transaction>
@@ -208,7 +209,7 @@ const AccountModal = () => {
                   </h3>
                   <div>
                     <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
-                    Click to view transaction details
+                    Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
                   </div>
                 </Transaction>
                 <Transaction>
@@ -221,7 +222,7 @@ const AccountModal = () => {
                   </h3>
                   <div>
                     <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
-                    Click to view transaction details
+                    Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
                   </div>
                 </Transaction>
               </Padding>
