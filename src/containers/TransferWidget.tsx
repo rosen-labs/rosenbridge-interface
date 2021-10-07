@@ -1,3 +1,4 @@
+import { RightOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
@@ -20,6 +21,7 @@ const GasPrice = styled.div`
   margin: 12px;
   font-size: 0.8rem;
   font-weight: 400;
+  color: ${colors.darkBlue};
 `;
 const TransactionDetails = styled.div`
   background: ${colors.lightBlue};
@@ -27,6 +29,7 @@ const TransactionDetails = styled.div`
   margin-bottom: 12px;
   padding: 12px;
   border-radius: 16px;
+  color: ${colors.darkBlue};
 
   & > h3 {
     font-size: 0.8rem;
@@ -48,11 +51,73 @@ const TransactionDetails = styled.div`
     }
   }
 `;
+const Grid = styled.div`
+  display: grid;
+  grid-gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+`;
+const SelectChain = styled.div`
+  background: ${colors.lightBlue};
+  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  border-radius: 12px;
+  color: ${colors.darkBlue};
+  padding: 7px 12px;
+  cursor: pointer;
+
+  & > span {
+    font-weight: 400;
+    font-size: 0.8rem;
+  }
+  & > div {
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 7px;
+
+    & > div:nth-child(1) {
+      display: flex;
+      align-items: center;
+    }
+
+    & img {
+      width: 22px;
+      height: 22px;
+      margin-right: 7px;
+    }
+  }
+`;
 
 const TransferWidget = () => {
   return (
     <Container>
       <h2>Transfer Token</h2>
+      <Grid>
+        <SelectChain>
+          <span>From</span>
+          <div>
+            <div>
+              <img src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png" />{" "}
+              Ethereum
+            </div>
+            <div>
+              <RightOutlined />
+            </div>
+          </div>
+        </SelectChain>
+        <SelectChain>
+          <span>To</span>
+          <div>
+            <div>
+              <img src="https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912" />{" "}
+              Polygon
+            </div>
+            <div>
+              <RightOutlined />
+            </div>
+          </div>
+        </SelectChain>
+      </Grid>
       <GasPrice>Current Gas Price: 0.001 ETH (~ 10.23$)</GasPrice>
       <TransactionDetails>
         <h3>Tranasction Details</h3>
