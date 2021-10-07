@@ -1,4 +1,4 @@
-import { RightOutlined } from "@ant-design/icons";
+import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
@@ -87,11 +87,84 @@ const SelectChain = styled.div`
     }
   }
 `;
+const TokenAmount = styled.div`
+  background: ${colors.lightBlue};
+  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  border-radius: 12px;
+  color: ${colors.darkBlue};
+  padding: 7px 12px;
+  margin: 12px 0;
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+
+    & div {
+      font-weight: 400;
+    }
+  }
+`;
+const SelectToken = styled.div`
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  padding: 3px 7px;
+  border-radius: 5rem;
+  transition: 0.25s;
+
+  &:hover {
+    background: #f9f9f9;
+  }
+
+  & img {
+    width: 22px;
+    height: 22px;
+    margin-right: 5px;
+  }
+
+  box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.03);
+  -webkit-box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.03);
+  -moz-box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.03);
+`;
+const TokenAmountInput = styled.input`
+  border: 0;
+  background: transparent;
+  text-align: right;
+  outline: none;
+  font-size: 1.2rem;
+
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`;
 
 const TransferWidget = () => {
   return (
     <Container>
       <h2>Transfer Token</h2>
+      <TokenAmount>
+        <div style={{ marginBottom: 5 }}>
+          <SelectToken>
+            <img src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png" />
+            <span>DAI</span>
+            <span style={{ marginLeft: 7, fontSize: "0.8rem" }}>
+              <DownOutlined />
+            </span>
+          </SelectToken>
+          <div>
+            <TokenAmountInput type="number" placeholder="0.0" />
+          </div>
+        </div>
+        <div>
+          <div>Balance: 512.2342 USDT</div>
+          <div>~ 100.6231$</div>
+        </div>
+      </TokenAmount>
       <Grid>
         <SelectChain>
           <span>From</span>
