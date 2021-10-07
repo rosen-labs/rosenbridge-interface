@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { useWindowWidth } from "@react-hook/window-size";
 import { Br } from "./common/atomic";
@@ -48,7 +47,7 @@ const MobileNotSupportScreen = styled.div`
     font-size: 1.2rem;
   }
   & > p {
-    color: #ccc;
+    color: #555;
     font-size: 1rem;
   }
 `;
@@ -56,7 +55,7 @@ const EnterSite = styled.div`
   margin-top: 15px;
   width: calc(100vw - 30px);
 `;
-const Unicorn = styled.div`
+const Emoji = styled.div`
   font-size: 5rem;
 `;
 const IconBar = styled.div`
@@ -77,12 +76,12 @@ function App() {
     <ContextProvider>
       {!isEnter && screenWidth <= 960 && (
         <MobileNotSupportScreen>
-          <Unicorn>🦄</Unicorn>
-          <h1>Welcome to UniswapCalculator</h1>
+          <Emoji>🌉</Emoji>
+          <h1>Welcome to Rosen Bridge</h1>
           <p>
-            Hi 🖐 Welcome to UniswapCalculator! I just want to tell you that
-            this site doesn't support mobile devices yet. for a better
-            experience, please visit on your desktop
+            Hi 🖐 Welcome to Rosen Bridge! I just want to tell you that this
+            site doesn't support mobile devices yet. for a better experience,
+            please visit on your desktop
           </p>
           <EnterSite>
             <PrimaryBlockButton onClick={() => setIsEnter(true)}>
@@ -98,7 +97,7 @@ function App() {
               <FontAwesomeIcon icon={faTwitter} />
             </a>
             <a
-              href="https://github.com/chunza2542/uniswapv3-calculator"
+              href="https://github.com/rosen-labs"
               target="_blank"
               rel="noreferrer"
             >
@@ -112,8 +111,6 @@ function App() {
       )}
       {(isEnter || screenWidth > 960) && (
         <>
-          <SelectPairModal />
-          <DonateModal />
           <Navbar />
           <BodyContainer>
             <Header />
