@@ -12,7 +12,7 @@ export const colors = {
   blue: withOpacity(blueTemplate, 1),
   darkBlue: withOpacity(darkBlueTemplate, 1),
   lightBlue: withOpacity(blueTemplate, 0.07),
-  fadedBlue: withOpacity(blueTemplate, 0.85),
+  fadedBlue: withOpacity(darkBlueTemplate, 0.85),
   pink: withOpacity(pinkTemplate, 1),
   fadedPink: withOpacity(pinkTemplate, 0.7),
   green: withOpacity(greenTemplate, 1),

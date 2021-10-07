@@ -63,7 +63,7 @@ const Header = styled.h1`
   }
 `;
 const Padding = styled.div`
-  padding: 10px;
+  padding: 12px;
 `;
 const AccountDetail = styled.div`
   border: 1px solid ${withOpacity(blueTemplate, 0.3)};
@@ -145,26 +145,82 @@ const TimelineContainer = styled.div`
   padding-bottom: 0;
   margin-top: 15px;
 `;
-const TransactionDetail = styled.div`
+const Grid = styled.div`
+  position: relative;
+
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(2, 1fr);
+
+  margin-bottom: 12px;
+`;
+const Arrow = styled.div`
+  position: absolute;
+  font-size: 1rem;
+  color: ${colors.fadedBlue};
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% + 1px), -50%);
+`;
+const TransactionDetails = styled.div`
   background: ${colors.lightBlue};
   border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  margin-bottom: 12px;
+  padding: 12px;
+  padding-bottom: 3px;
   border-radius: 16px;
-  padding: 15px;
+  color: ${colors.darkBlue};
 
-  & > h2 {
-    margin: 0;
-    font-size: 1rem;
+  & > h3 {
+    font-size: 0.8rem;
+    font-weight: 400;
+    padding-top: 7px;
+    margin-top: 7px;
+    border-top: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  }
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+
+    & > div:nth-child(1) {
+      font-weight: 400;
+    }
+    & > div:nth-child(2) {
+      font-weight: 600;
+    }
+  }
+`;
+const Chain = styled.div`
+  background: ${colors.lightBlue};
+  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
+  border-radius: 12px;
+  color: ${colors.darkBlue};
+  padding: 7px 12px;
+  cursor: pointer;
+
+  & > span {
+    font-weight: 400;
+    font-size: 0.8rem;
   }
   & > div {
-    font-size: 0.8rem;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 7px;
-    color: ${colors.fadedBlue};
-  }
-  & > p {
-    margin: 0;
-    border-top: 1px solid ${withOpacity(blueTemplate, 0.1)};
-    margin-top: 15px;
-    padding-top: 15px;
+
+    & > div:nth-child(1) {
+      display: flex;
+      align-items: center;
+    }
+
+    & img {
+      width: 22px;
+      height: 22px;
+      margin-right: 7px;
+    }
   }
 `;
 
@@ -211,19 +267,50 @@ const AccountModal = () => {
           {isOpenDetail && (
             <Container>
               <Padding>
-                <TransactionDetail>
-                  <h2>Transfer 10.5213 USDT</h2>
+                <Grid>
+                  <Arrow>
+                    <ArrowRightOutlined />
+                  </Arrow>
+                  <Chain>
+                    <span>From</span>
+                    <div>
+                      <div>
+                        <img src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png" />{" "}
+                        Ethereum
+                      </div>
+                    </div>
+                  </Chain>
+                  <Chain>
+                    <span>To</span>
+                    <div>
+                      <div>
+                        <img src="https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912" />{" "}
+                        Polygon
+                      </div>
+                    </div>
+                  </Chain>
+                </Grid>
+                <TransactionDetails>
                   <div>
-                    <span style={{ marginRight: 5 }}>
-                      <FieldTimeOutlined /> 10:30, 15 Sep 2021
-                    </span>
-                    <br />
-                    Ethereum Mainnet <ArrowRightOutlined /> Polygon Mainnet
+                    <div>Network Fees</div>
+                    <div>0.135 ETH (~ 214.56$)</div>
                   </div>
-                  <p>
+                  <div>
+                    <div>Received</div>
+                    <div>100.5123 USDT</div>
+                  </div>
+                  <div>
+                    <div>Sender</div>
+                    <div>0x68fc...C1a5</div>
+                  </div>
+                  <div>
+                    <div>Recipient</div>
+                    <div>0x68fc...C1a5</div>
+                  </div>
+                  <h3>
                     <ProcessingStatus />
-                  </p>
-                </TransactionDetail>
+                  </h3>
+                </TransactionDetails>
                 <TimelineContainer>
                   <Timeline pending="Recording...">
                     <Timeline.Item>
