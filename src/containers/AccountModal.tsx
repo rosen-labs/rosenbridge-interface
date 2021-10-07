@@ -1,11 +1,16 @@
 import Modal from "react-modal";
 import { useModalContext } from "../context/modal/modalContext";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { blueTemplate, colors, withOpacity } from "../utils/styled";
-import { CloseOutlined, CopyOutlined, LinkOutlined } from "@ant-design/icons";
+import {
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
+  CloseOutlined,
+  CopyOutlined,
+  LinkOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 
 const ModalStyle = {
   overlay: {
@@ -40,7 +45,7 @@ const Header = styled.h1`
   align-items: center;
 
   & span:nth-child(1) {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   & span:nth-child(2) {
     font-size: 0rem;
@@ -83,6 +88,44 @@ const AccountDetail = styled.div`
       margin-right: 15px;
       color: ${colors.fadedBlue};
     }
+  }
+`;
+const TransactionHistoryContainer = styled.div`
+  background: ${colors.lightBlue};
+
+  & h2 {
+    font-size: 0.8rem;
+    color: ${colors.darkBlue};
+    display: block;
+    margin-bottom: 7px;
+  }
+`;
+const Transaction = styled.div`
+  cursor: pointer;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid ${withOpacity(blueTemplate, 0.1)};
+  padding: 10px;
+  margin-top: 5px;
+
+  &:hover {
+    border: 1px solid ${withOpacity(blueTemplate, 0.3)};
+  }
+
+  & > h3 {
+    margin: 0;
+    font-size: 0.8rem;
+    color: ${colors.darkBlue};
+
+    display: flex;
+    justify-content: space-between;
+    & > div {
+      font-size: 0.6rem;
+    }
+  }
+  & > div {
+    font-size: 0.6rem;
+    color: ${colors.fadedBlue};
   }
 `;
 
@@ -137,6 +180,52 @@ const AccountModal = () => {
                 </div>
               </AccountDetail>
             </Padding>
+            <TransactionHistoryContainer>
+              <Padding>
+                <h2>Transaction History</h2>
+                <Transaction>
+                  <h3>
+                    <span>Transfer 100.23 USDT</span>
+                    <div>
+                      <LoadingOutlined
+                        style={{ color: colors.blue, marginRight: 2 }}
+                      />{" "}
+                      <span style={{ color: colors.blue }}>Processing...</span>
+                    </div>
+                  </h3>
+                  <div>
+                    <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                    Click to view transaction details
+                  </div>
+                </Transaction>
+                <Transaction>
+                  <h3>
+                    <span>Transfer 100.23 USDT</span>
+                    <div>
+                      <CheckCircleTwoTone twoToneColor={colors.green} />{" "}
+                      <span style={{ color: colors.green }}>Transfered</span>
+                    </div>
+                  </h3>
+                  <div>
+                    <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                    Click to view transaction details
+                  </div>
+                </Transaction>
+                <Transaction>
+                  <h3>
+                    <span>Transfer 100.23 USDT</span>
+                    <div>
+                      <CloseCircleTwoTone twoToneColor={colors.pink} />{" "}
+                      <span style={{ color: colors.pink }}>Failed</span>
+                    </div>
+                  </h3>
+                  <div>
+                    <span style={{ marginRight: 5 }}>10:30, 15 Sep 2021</span>{" "}
+                    Click to view transaction details
+                  </div>
+                </Transaction>
+              </Padding>
+            </TransactionHistoryContainer>
           </Container>
         </>
       </Modal>
