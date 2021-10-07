@@ -8,11 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import AccountModal from "./containers/AccountModal";
+import TransferWidget from "./containers/TransferWidget";
 
 const BodyContainer = styled.div`
-  width: 900px;
+  width: 400px;
   margin: auto auto;
-  padding-top: 100px;
+  padding-top: 150px;
 `;
 const MobileNotSupportScreen = styled.div`
   width: 100vw;
@@ -60,7 +61,7 @@ function App() {
 
   return (
     <ContextProvider>
-      {!isEnter && screenWidth <= 960 && (
+      {!isEnter && screenWidth <= 550 && (
         <MobileNotSupportScreen>
           <Emoji>🌉</Emoji>
           <h1>Welcome to Rosen Bridge</h1>
@@ -95,12 +96,14 @@ function App() {
           </IconBar>
         </MobileNotSupportScreen>
       )}
-      {(isEnter || screenWidth > 960) && (
+      {(isEnter || screenWidth > 550) && (
         <>
           <AccountModal />
 
           <Navbar />
-          <BodyContainer>HELLO?</BodyContainer>
+          <BodyContainer>
+            <TransferWidget />
+          </BodyContainer>
         </>
       )}
     </ContextProvider>
