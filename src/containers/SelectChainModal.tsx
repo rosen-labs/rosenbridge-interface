@@ -46,28 +46,8 @@ const Container = styled.div`
   width: 350px;
   padding: 15px;
 `;
-const SearchInput = styled.input`
-  border: 0;
-  outline: none;
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-size: 1rem;
-  background: ${colors.lightBlue};
-  border: 1px solid ${withOpacity(darkBlueTemplate, 0.1)};
-  cursor: pointer;
-  transition: 0.3s;
-
-  &:hover {
-    background: ${withOpacity(darkBlueTemplate, 0.1)};
-  }
-
-  &:focus {
-    background: ${withOpacity(darkBlueTemplate, 0.07)};
-  }
-`;
 const Scrollable = styled.div`
-  height: 300px;
+  min-height: 300px;
   overflow: scroll;
 `;
 const ChainItem = styled.div`
@@ -145,73 +125,65 @@ const SelectChainModal = () => {
           <Scrollable>
             <ChainItem>
               <img
-                src="https://vee.finance/static/media/ETH.df265e36.svg"
-                alt="ETH"
+                src="https://www.scbtechx.io/wp-content/uploads/2021/07/logo-social.png"
+                alt="XYZ Network"
               />
               <div>
                 <div>
-                  <h5>Ethereum</h5>
-                  <span>Ethereum Mainnet</span>
+                  <h5>XYZ Network</h5>
+                  <span>Mocked chain for demonstrating</span>
                 </div>
               </div>
             </ChainItem>
             <ChainItem>
               <img
-                src="https://vee.finance/static/media/ETH.df265e36.svg"
-                alt="ETH"
+                src="https://polygon.technology/media-kit/matic-token-icon.png"
+                alt="Polygon"
               />
               <div>
                 <div>
-                  <h5>Ethereum</h5>
-                  <span>Ethereum Mainnet</span>
+                  <h5>Polygon</h5>
+                  <span>Polygon Testnet</span>
                 </div>
               </div>
             </ChainItem>
             <ChainItem>
               <img
-                src="https://vee.finance/static/media/ETH.df265e36.svg"
-                alt="ETH"
+                src="https://s2.coinmarketcap.com/static/img/coins/200x200/3945.png"
+                alt="Harmony One"
               />
               <div>
                 <div>
-                  <h5>Ethereum</h5>
-                  <span>Ethereum Mainnet</span>
+                  <h5>Harmony One</h5>
+                  <span>Harmony One Testnet</span>
                 </div>
               </div>
             </ChainItem>
-            <ChainItem>
+            <ChainItem
+              style={{ cursor: "not-allowed", background: colors.lightBlue }}
+            >
               <img
-                src="https://vee.finance/static/media/ETH.df265e36.svg"
-                alt="ETH"
+                src="https://pbs.twimg.com/profile_images/1384182565154611201/XFFjq4v1_400x400.jpg"
+                alt="Optimism"
               />
               <div>
                 <div>
-                  <h5>Ethereum</h5>
-                  <span>Ethereum Mainnet</span>
+                  <h5>Optimism</h5>
+                  <span>Optimism Ethereum Layer 2 Mainnet</span>
                 </div>
               </div>
             </ChainItem>
-            <ChainItem>
+            <ChainItem
+              style={{ cursor: "not-allowed", background: colors.lightBlue }}
+            >
               <img
-                src="https://vee.finance/static/media/ETH.df265e36.svg"
-                alt="ETH"
+                src="https://solana.com/branding/new/exchange/exchange-black.png"
+                alt="Solana"
               />
               <div>
                 <div>
-                  <h5>Ethereum</h5>
-                  <span>Ethereum Mainnet</span>
-                </div>
-              </div>
-            </ChainItem>
-            <ChainItem>
-              <img
-                src="https://vee.finance/static/media/ETH.df265e36.svg"
-                alt="ETH"
-              />
-              <div>
-                <div>
-                  <h5>Ethereum</h5>
-                  <span>Ethereum Mainnet</span>
+                  <h5>Solana</h5>
+                  <span>Solana Mainnet</span>
                 </div>
               </div>
             </ChainItem>
