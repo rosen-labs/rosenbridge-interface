@@ -5,6 +5,8 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@cosmjs/launchpad": "^0.26.1",
+    "@cosmjs/proto-signing": "^0.26.1",
+    "@cosmjs/stargate": "^0.26.1",
     "@ethersproject/providers": "^5.4.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
