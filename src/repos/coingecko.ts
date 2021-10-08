@@ -1,5 +1,5 @@
 import axios from "axios";
-import tokenAddressMapping from "./tokenAddressMapping.json";
+import tokenAddressMapping from "../datasources/tokenAddressMapping.json";
 
 export enum QueryPeriodEnum {
   ONE_DAY = "1",
