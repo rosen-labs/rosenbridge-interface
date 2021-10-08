@@ -1,8 +1,11 @@
 import { CloseOutlined } from "@ant-design/icons";
 import Modal from "react-modal";
 import styled from "styled-components";
+import { useAppContext } from "../context/app/appContext";
+import { AppActionType } from "../context/app/appReducer";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
+import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 
 const ModalStyle = {
@@ -81,21 +84,109 @@ const WalletItem = styled.div`
   }
 `;
 
+declare global {
+  interface Window {
+    keplr: any;
+    getOfflineSigner: any;
+  }
+}
+
+const COSMOS_CHAIN_ID = "testza";
 const ConnectWalletModal = () => {
-  const { state, dispatch } = useModalContext();
+  const modalContext = useModalContext();
+  const appContext = useAppContext();
+
+  const connectToKepler = async () => {
+    if (!window.getOfflineSigner || !window.keplr) {
+      // TODO: Display error message to user
+      return;
+    }
+
+    if (window.keplr.experimentalSuggestChain) {
+      try {
+        await window.keplr.experimentalSuggestChain({
+          chainId: COSMOS_CHAIN_ID,
+          chainName: "testza",
+          rpc: "https://node-cosmoshub-3.keplr.app/rpc",
+          rest: "https://node-cosmoshub-3.keplr.app/rest",
+          stakeCurrency: {
+            coinDenom: "ATOM",
+            coinMinimalDenom: "uatom",
+            coinDecimals: 6,
+          },
+          bip44: {
+            coinType: 118,
+          },
+          bech32Config: {
+            bech32PrefixAccAddr: "cosmos",
+            bech32PrefixAccPub: "cosmospub",
+            bech32PrefixValAddr: "cosmosvaloper",
+            bech32PrefixValPub: "cosmosvaloperpub",
+            bech32PrefixConsAddr: "cosmosvalcons",
+            bech32PrefixConsPub: "cosmosvalconspub",
+          },
+          currencies: [
+            {
+              coinDenom: "ATOM",
+              coinMinimalDenom: "uatom",
+              coinDecimals: 6,
+            },
+          ],
+          feeCurrencies: [
+            {
+              coinDenom: "ATOM",
+              coinMinimalDenom: "uatom",
+              coinDecimals: 6,
+            },
+          ],
+          coinType: 118,
+          gasPriceStep: {
+            low: 0.01,
+            average: 0.025,
+            high: 0.04,
+          },
+        });
+      } catch (e) {
+        console.error("Failed to suggest the chain", e);
+      }
+    } else {
+      console.error("Please use the recent version of keplr extension");
+    }
+
+    // enable user wallet
+    await window.keplr.enable(COSMOS_CHAIN_ID);
+    const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
+    const accounts = await offlineSigner.getAccounts();
+
+    if (accounts.length > 0) {
+      const account = accounts[0];
+
+      appContext.dispatch({
+        type: AppActionType.SET_WALLET_INFO,
+        payload: {
+          address: account.address,
+          type: WalletType.KEPLR,
+        },
+      });
+      modalContext.dispatch({
+        type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
+        payload: false,
+      });
+    }
+  };
 
   return (
     <>
       <Modal
         style={ModalStyle}
-        isOpen={state.isConnectWalletModalOpen}
+        isOpen={modalContext.state.isConnectWalletModalOpen}
         contentLabel="Select Chain"
       >
         <Header>
           <span>Connect to a wallet</span>
           <span
             onClick={() => {
-              dispatch({
+              modalContext.dispatch({
                 type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
                 payload: false,
               });
@@ -114,7 +205,7 @@ const ConnectWalletModal = () => {
               alt="MetaMask"
             />
           </WalletItem>
-          <WalletItem>
+          <WalletItem onClick={connectToKepler}>
             <div>
               <h5>Keplr</h5>
             </div>

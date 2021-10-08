@@ -11,7 +11,7 @@ const initialState: ModalContextState = {
   isAccountModalOpen: false,
   isSelectTokenModalOpen: false,
   isSelectFromChainModalOpen: false,
-  isConnectWalletModalOpen: true,
+  isConnectWalletModalOpen: false,
 };
 
 interface ModalContextProviderProps {

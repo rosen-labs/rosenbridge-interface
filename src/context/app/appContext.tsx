@@ -1,14 +1,15 @@
 import React from "react";
+import { WalletInfo } from "../../types/wallet";
 import { AppAction, appReducer } from "./appReducer";
 
 export interface AppContextState {
-  userWalletAddress: string | null;
+  walletInfo: WalletInfo | null;
   selectedToken: null;
   selectedFromChain: null;
   selectedToChain: null;
 }
 const initialState: AppContextState = {
-  userWalletAddress: null,
+  walletInfo: null,
   selectedToken: null,
   selectedFromChain: null,
   selectedToChain: null,
