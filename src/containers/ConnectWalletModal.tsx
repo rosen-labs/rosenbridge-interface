@@ -91,7 +91,7 @@ declare global {
   }
 }
 
-const COSMOS_CHAIN_ID = "testza";
+const COSMOS_CHAIN_ID = "cosmos:ice-chain";
 const ConnectWalletModal = () => {
   const modalContext = useModalContext();
   const appContext = useAppContext();
@@ -106,12 +106,12 @@ const ConnectWalletModal = () => {
       try {
         await window.keplr.experimentalSuggestChain({
           chainId: COSMOS_CHAIN_ID,
-          chainName: "testza",
-          rpc: "https://node-cosmoshub-3.keplr.app/rpc",
-          rest: "https://node-cosmoshub-3.keplr.app/rest",
+          chainName: "ICE Chain",
+          rpc: "http://0.0.0.0:26657",
+          rest: "http://0.0.0.0:1317",
           stakeCurrency: {
-            coinDenom: "ATOM",
-            coinMinimalDenom: "uatom",
+            coinDenom: "STAKE",
+            coinMinimalDenom: "stake",
             coinDecimals: 6,
           },
           bip44: {
@@ -127,24 +127,24 @@ const ConnectWalletModal = () => {
           },
           currencies: [
             {
-              coinDenom: "ATOM",
-              coinMinimalDenom: "uatom",
+              coinDenom: "ICE",
+              coinMinimalDenom: "token",
               coinDecimals: 6,
             },
           ],
           feeCurrencies: [
             {
-              coinDenom: "ATOM",
-              coinMinimalDenom: "uatom",
+              coinDenom: "ICE",
+              coinMinimalDenom: "token",
               coinDecimals: 6,
             },
           ],
-          coinType: 118,
           gasPriceStep: {
             low: 0.01,
             average: 0.025,
             high: 0.04,
           },
+          coinType: 118,
         });
       } catch (e) {
         console.error("Failed to suggest the chain", e);
