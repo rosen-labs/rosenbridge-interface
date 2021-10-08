@@ -1,5 +1,7 @@
 import {useState, useEffect} from "react"
 import { CloseOutlined } from "@ant-design/icons";
+import { SigningStargateClient, coins } from "@cosmjs/stargate";
+import { Registry } from "@cosmjs/proto-signing";
 import { useWeb3React } from "@web3-react/core"
 import Modal from "react-modal";
 import styled from "styled-components";
@@ -9,6 +11,7 @@ import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
+import { MsgSendMsgMintRequest } from "../protos/tx";
 import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
 import {injected} from "../constants/connectors"
@@ -163,6 +166,60 @@ const ConnectWalletModal = () => {
     await window.keplr.enable(COSMOS_CHAIN_ID);
     const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
     const accounts = await offlineSigner.getAccounts();
+
+    console.log(accounts, offlineSigner);
+
+    const registry = new Registry();
+    registry.register(
+      "/rosenlabs.xchain.xchain.MsgSendMsgMintRequest",
+      MsgSendMsgMintRequest
+    );
+    const options = {
+      registry: registry,
+      prefix: "xchain",
+    };
+    const client = await SigningStargateClient.connectWithSigner(
+      "http://0.0.0.0:26657",
+      offlineSigner,
+      options
+    );
+
+    const value: MsgSendMsgMintRequest = {
+      sender: accounts[0].address,
+      port: "bridge",
+      channelID: "channel-1",
+      timeoutTimestamp: 100,
+      reciever: "cosmos184n5ltlkjt3dmwk29cwhxgqkwhlgr7lssyxv3z",
+      amount: 123,
+      fee: 1,
+      tokenId: 0,
+      srcChainId: 0,
+      destChainId: 1,
+    };
+
+    const msg = {
+      typeUrl: "/rosenlabs.xchain.xchain.MsgSendMsgMintRequest",
+      value,
+    };
+    const fee = {
+      amount: coins(1, "token"),
+      gas: "180000",
+    };
+
+    const seq = await client.signAndBroadcast(
+      accounts[0].address,
+      [msg],
+      fee,
+      "TODO: Change This"
+    );
+    console.log({ seq });
+    // const a = await client.sendTokens(
+    //   accounts[0].address,
+    //   "cosmos1qqae7949a97krudpg2nq299rlp449z0qc2989e",
+    //   coins(10, "token"),
+    //   fee
+    // );
+    // console.log({ a });
 
     if (accounts.length > 0) {
       const account = accounts[0];
