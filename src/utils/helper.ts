@@ -30,3 +30,13 @@ export const getTokenLogoURL = (address: string): string => {
 
   return `https://via.placeholder.com/30`;
 };
+
+export const shortAddress = (address: string | null | undefined): string => {
+  if (!address) return "0x";
+  const length = address.length;
+    return (
+      address.substr(0, 13) +
+      "..." +
+      address.substr(length - 6, 6)
+    );
+};

@@ -1,10 +1,17 @@
+import {ethers} from "ethers"
+import { useWeb3React } from "@web3-react/core"
 import { DownOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
+import { useERC20 } from "../hooks/useERC20";
+import {DAI} from "../constants/Token"
+import {BRIDGE_POLYGON} from "../constants/Contract"
+import {shortAddress} from "../utils/helper"
+import BridgeABI from "../constants/abi/Bridge.json"
 
 const Container = styled.div`
   background: white;
@@ -172,8 +179,63 @@ const RecipientInput = styled.div`
 `;
 
 const TransferWidget = () => {
+  const {account, library} = useWeb3React()
   const [isEditRecipient, setIsEditRecipient] = useState(false);
+  const [isBridgeApproved, setIsBridgeApproved] = useState(false)
+  const [tokenAmount, setTokenAmount] = useState<number>(0)
+  const [loading, setLoading] = useState(false)
   const modalContext = useModalContext();
+  const tokenContract = useERC20(DAI, account, library)
+
+  useEffect(() => {
+    if(!tokenContract || !account) return
+    const getTokenApprove = async () => {
+      const allowance = await tokenContract.allowance(
+        BRIDGE_POLYGON
+      )
+      if (parseFloat(allowance) > 0) {
+        setIsBridgeApproved(true)
+        return
+      }
+      setIsBridgeApproved(false)
+    }
+    getTokenApprove()
+  }, [tokenContract, account])
+
+  const onTokenApprove = useCallback(async () => {
+    try {
+      const tx = await tokenContract.approve(
+        BRIDGE_POLYGON,
+      )
+      setLoading(true)
+      await tx.wait()
+    } catch(e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }, [tokenContract, account])
+
+  const onSubmitToBridge = useCallback(async () => {
+    try {
+      const bridgeContract = new ethers.Contract(
+        BRIDGE_POLYGON,
+        BridgeABI,
+        library.getSigner()
+      )
+      const tx = await bridgeContract.sendToCosmos(
+        DAI,
+        ethers.constants.MaxUint256,
+        ethers.utils.parseEther(tokenAmount?.toString())
+      )
+      setLoading(true)
+      await tx.wait()
+    } catch(e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }, [tokenContract, account, tokenAmount])
 
   return (
     <Container>
@@ -195,12 +257,12 @@ const TransferWidget = () => {
             </span>
           </SelectToken>
           <div>
-            <TokenAmountInput type="number" placeholder="0.0" />
+            <TokenAmountInput value={tokenAmount} type="number" placeholder="0.0" />
           </div>
         </div>
         <div>
-          <div>Balance: 512.2342 USDT</div>
-          <div>~ 100.6231$</div>
+          <div>Balance: {tokenContract?.balance.toFixed(2) || 0} DAI</div>
+          <div>~ {tokenContract?.balance.toFixed(2) || 0}$</div>
         </div>
       </TokenAmount>
       <Grid>
@@ -241,15 +303,15 @@ const TransferWidget = () => {
         <h3>Tranasction Details</h3>
         <div>
           <div>Estimated Fees</div>
-          <div>0.135 ETH (~ 214.56$)</div>
+          <div>{Number(tokenAmount)*0.01} {tokenContract?.symbol} (~ {tokenAmount*0.01}$)</div>
         </div>
         <div>
           <div>Estimated Received</div>
-          <div>100.5123 USDT</div>
+          <div>{Number(tokenAmount)*0.01} {tokenContract?.symbol}</div>
         </div>
         <div>
           <div>Sender</div>
-          <div>0x68fc...C1a5</div>
+          <div>{shortAddress(account)}</div>
         </div>
         <div>
           <div>Recipient</div>
@@ -273,7 +335,7 @@ const TransferWidget = () => {
           <input placeholder="0x0000000000000000000000000000000000000000" />
         </RecipientInput>
       )}
-      <PrimaryBlockButton>Confirm Transaction</PrimaryBlockButton>
+      {!isBridgeApproved ? <PrimaryBlockButton onClick={onTokenApprove}>Approve {tokenContract?.symbol} {loading && "..."}</PrimaryBlockButton> : <PrimaryBlockButton onClick={onSubmitToBridge}>Confirm Transaction</PrimaryBlockButton>}
     </Container>
   );
 };
