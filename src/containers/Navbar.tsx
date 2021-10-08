@@ -1,6 +1,9 @@
 import styled, { keyframes } from "styled-components";
+import { useWeb3React } from "@web3-react/core"
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
+import { AppActionType } from "../context/app/appReducer";
+import { WalletType } from "../types/wallet";
 import { colors } from "../utils/styled";
 import { SigningCosmosClient } from "@cosmjs/launchpad";
 import { useEffect } from "react";
@@ -96,8 +99,20 @@ const Menubar = styled.div`
 `;
 
 const Navbar = () => {
+  const { account, library } = useWeb3React()
   const modalContext = useModalContext();
   const appContext = useAppContext();
+
+  useEffect(() => {
+    if(!account) return
+    appContext.dispatch({
+      type: AppActionType.SET_WALLET_INFO,
+      payload: {
+        address: account,
+        type: WalletType.METAMASK
+      },
+    });
+  }, [account, library])
 
   return (
     <NavbarContainer>

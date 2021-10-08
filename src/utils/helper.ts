@@ -11,6 +11,13 @@ export const formatWalletAddress = (walletInfo: WalletInfo | null): string => {
       "..." +
       walletInfo.address.substr(length - 6, 6)
     );
+  } else if(walletInfo.type === WalletType.METAMASK) {
+    const length = walletInfo.address.length;
+    return (
+      walletInfo.address.substr(0, 13) +
+      "..." +
+      walletInfo.address.substr(length - 6, 6)
+    );
   }
   return walletInfo.address;
 };

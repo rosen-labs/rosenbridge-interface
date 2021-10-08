@@ -1,4 +1,5 @@
 import Modal from "react-modal";
+import { useWeb3React } from "@web3-react/core"
 import { useModalContext } from "../context/modal/modalContext";
 import styled from "styled-components";
 import { ModalActionType } from "../context/modal/modalReducer";
@@ -235,6 +236,7 @@ const ProcessingStatus = () => (
 );
 
 const AccountModal = () => {
+  const { deactivate } = useWeb3React()
   const modalContext = useModalContext();
   const appContext = useAppContext();
   const [isOpenDetail, setIsOpenDetail] = useState(false);
@@ -341,6 +343,7 @@ const AccountModal = () => {
                       WalletType.METAMASK && <div>Connected with MetaMask</div>}
                     <div
                       onClick={() => {
+                        deactivate()
                         appContext.dispatch({
                           type: AppActionType.SET_WALLET_INFO,
                           payload: null,
