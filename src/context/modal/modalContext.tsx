@@ -5,11 +5,13 @@ export interface ModalContextState {
   isAccountModalOpen: boolean;
   isSelectTokenModalOpen: boolean;
   isSelectFromChainModalOpen: boolean;
+  isConnectWalletModalOpen: boolean;
 }
 const initialState: ModalContextState = {
   isAccountModalOpen: false,
   isSelectTokenModalOpen: false,
   isSelectFromChainModalOpen: false,
+  isConnectWalletModalOpen: true,
 };
 
 interface ModalContextProviderProps {
