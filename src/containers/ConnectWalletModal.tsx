@@ -1,6 +1,8 @@
+import {useState, useEffect} from "react"
 import { CloseOutlined } from "@ant-design/icons";
 import { SigningStargateClient, coins } from "@cosmjs/stargate";
 import { Registry } from "@cosmjs/proto-signing";
+import { useWeb3React } from "@web3-react/core"
 import Modal from "react-modal";
 import styled from "styled-components";
 import { useAppContext } from "../context/app/appContext";
@@ -10,6 +12,9 @@ import { ModalActionType } from "../context/modal/modalReducer";
 import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { MsgSendMsgMintRequest } from "../protos/tx";
+import useEagerConnect from "../hooks/useEagerConnect";
+import useInactiveListener from "../hooks/useInactiveListener";
+import {injected} from "../constants/connectors"
 
 const ModalStyle = {
   overlay: {
@@ -98,6 +103,7 @@ const COSMOS_CHAIN_ID = "cosmos:ice-chain";
 const ConnectWalletModal = () => {
   const modalContext = useModalContext();
   const appContext = useAppContext();
+  const { activate, error } = useWeb3React()
 
   const connectToKepler = async () => {
     if (!window.getOfflineSigner || !window.keplr) {
@@ -232,6 +238,30 @@ const ConnectWalletModal = () => {
     }
   };
 
+  // handle logic to recognize the connector currently being activated
+  const [activatingConnector, setActivatingConnector] = useState<any>()
+
+  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
+  const triedEager = useEagerConnect()
+
+  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
+  useInactiveListener(!triedEager || !!activatingConnector)
+
+  useEffect(() => {
+    if (error && error.name === "UnsupportedChainIdError") {
+      //TODO error when not support chain
+    }
+  }, [error])
+
+  const connectToMetamask = async () => {
+    setActivatingConnector(injected)
+    activate(injected)
+    modalContext.dispatch({
+      type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
+      payload: false,
+    });
+  }
+
   return (
     <>
       <Modal
@@ -253,7 +283,7 @@ const ConnectWalletModal = () => {
           </span>
         </Header>
         <Container>
-          <WalletItem>
+          <WalletItem onClick={connectToMetamask}>
             <div>
               <h5>MetaMask</h5>
             </div>
