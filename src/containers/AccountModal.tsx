@@ -21,6 +21,10 @@ import {
 } from "@ant-design/icons";
 import { useState } from "react";
 import { Timeline } from "antd";
+import { useAppContext } from "../context/app/appContext";
+import { formatWalletAddress } from "../utils/helper";
+import { WalletType } from "../types/wallet";
+import { AppActionType } from "../context/app/appReducer";
 
 const ModalStyle = {
   overlay: {
@@ -231,14 +235,15 @@ const ProcessingStatus = () => (
 );
 
 const AccountModal = () => {
-  const { state, dispatch } = useModalContext();
+  const modalContext = useModalContext();
+  const appContext = useAppContext();
   const [isOpenDetail, setIsOpenDetail] = useState(false);
 
   return (
     <>
       <Modal
         style={ModalStyle}
-        isOpen={state.isAccountModalOpen}
+        isOpen={modalContext.state.isAccountModalOpen}
         contentLabel="Account"
       >
         <>
@@ -254,7 +259,7 @@ const AccountModal = () => {
             {!isOpenDetail && <span>Account</span>}
             <span
               onClick={() => {
-                dispatch({
+                modalContext.dispatch({
                   type: ModalActionType.SET_ACCOUNT_MODAL_STATE,
                   payload: false,
                 });
@@ -329,15 +334,32 @@ const AccountModal = () => {
               <Padding>
                 <AccountDetail>
                   <div>
-                    <div>Connected with MetaMask</div>
-                    <div>Disconnect</div>
+                    {appContext.state.walletInfo?.type === WalletType.KEPLR && (
+                      <div>Connected with Keplr</div>
+                    )}
+                    {appContext.state.walletInfo?.type ===
+                      WalletType.METAMASK && <div>Connected with MetaMask</div>}
+                    <div
+                      onClick={() => {
+                        appContext.dispatch({
+                          type: AppActionType.SET_WALLET_INFO,
+                          payload: null,
+                        });
+                        modalContext.dispatch({
+                          type: ModalActionType.SET_ACCOUNT_MODAL_STATE,
+                          payload: false,
+                        });
+                      }}
+                    >
+                      Disconnect
+                    </div>
                   </div>
-                  <div>0x68fc...C1a5</div>
+                  <div>{formatWalletAddress(appContext.state.walletInfo)}</div>
                   <div>
                     <a
                       onClick={() => {
                         navigator.clipboard.writeText(
-                          "0x79A375feFbF90878502eADBA4A89697896B60c4d"
+                          appContext.state.walletInfo?.address || ""
                         );
                       }}
                     >
@@ -352,7 +374,7 @@ const AccountModal = () => {
                   </div>
                 </AccountDetail>
               </Padding>
-              <TransactionHistoryContainer>
+              {/* <TransactionHistoryContainer>
                 <Padding>
                   <h2>Transaction History</h2>
                   <Transaction onClick={() => setIsOpenDetail(true)}>
@@ -394,7 +416,7 @@ const AccountModal = () => {
                     </div>
                   </Transaction>
                 </Padding>
-              </TransactionHistoryContainer>
+              </TransactionHistoryContainer> */}
             </Container>
           )}
         </>

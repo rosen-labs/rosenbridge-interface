@@ -1,7 +1,9 @@
 import TokenImageURI from "../datasources/tokenImageURI.json";
 import { WalletInfo, WalletType } from "../types/wallet";
 
-export const formatWalletAddress = (walletInfo: WalletInfo): string => {
+export const formatWalletAddress = (walletInfo: WalletInfo | null): string => {
+  if (!walletInfo) return "";
+
   if (walletInfo.type === WalletType.KEPLR) {
     const length = walletInfo.address.length;
     return (

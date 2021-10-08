@@ -7,7 +7,7 @@ export enum AppActionType {
 
 export type AppAction = {
   type: AppActionType.SET_WALLET_INFO;
-  payload: WalletInfo;
+  payload: WalletInfo | null;
 };
 
 export const appReducer = (
