@@ -1,8 +1,8 @@
-import {useState, useEffect} from "react"
+import { useState, useEffect } from "react";
 import { CloseOutlined } from "@ant-design/icons";
 import { SigningStargateClient, coins } from "@cosmjs/stargate";
 import { Registry } from "@cosmjs/proto-signing";
-import { useWeb3React } from "@web3-react/core"
+import { useWeb3React } from "@web3-react/core";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { useAppContext } from "../context/app/appContext";
@@ -14,7 +14,8 @@ import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { MsgSendMsgMintRequest } from "../protos/tx";
 import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
-import {injected} from "../constants/connectors"
+import { injected } from "../constants/connectors";
+import { MsgBridgeRequest } from "../protos/bridge";
 
 const ModalStyle = {
   overlay: {
@@ -103,7 +104,7 @@ const COSMOS_CHAIN_ID = "cosmos:ice-chain";
 const ConnectWalletModal = () => {
   const modalContext = useModalContext();
   const appContext = useAppContext();
-  const { activate, error } = useWeb3React()
+  const { activate, error } = useWeb3React();
 
   const connectToKepler = async () => {
     if (!window.getOfflineSigner || !window.keplr) {
@@ -119,13 +120,23 @@ const ConnectWalletModal = () => {
           rpc: "http://0.0.0.0:26657",
           rest: "http://0.0.0.0:1317",
           stakeCurrency: {
-            coinDenom: "STAKE",
-            coinMinimalDenom: "stake",
+            coinDenom: "ATOM",
+            coinMinimalDenom: "uatom",
             coinDecimals: 6,
           },
           bip44: {
             coinType: 118,
           },
+          // Bech32 configuration to show the address to user.
+          // This field is the interface of
+          // {
+          //   bech32PrefixAccAddr: string;
+          //   bech32PrefixAccPub: string;
+          //   bech32PrefixValAddr: string;
+          //   bech32PrefixValPub: string;
+          //   bech32PrefixConsAddr: string;
+          //   bech32PrefixConsPub: string;
+          // }
           bech32Config: {
             bech32PrefixAccAddr: "cosmos",
             bech32PrefixAccPub: "cosmospub",
@@ -134,26 +145,40 @@ const ConnectWalletModal = () => {
             bech32PrefixConsAddr: "cosmosvalcons",
             bech32PrefixConsPub: "cosmosvalconspub",
           },
+          // List of all coin/tokens used in this chain.
           currencies: [
             {
+              // Coin denomination to be displayed to the user.
               coinDenom: "ICE",
-              coinMinimalDenom: "token",
+              // Actual denom (i.e. uatom, uscrt) used by the blockchain.
+              coinMinimalDenom: "uatom",
+              // # of decimal points to convert minimal denomination to user-facing denomination.
               coinDecimals: 6,
+              // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
+              // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
+              // coinGeckoId: ""
             },
           ],
+          // List of coin/tokens used as a fee token in this chain.
           feeCurrencies: [
             {
+              // Coin denomination to be displayed to the user.
               coinDenom: "ICE",
-              coinMinimalDenom: "token",
+              // Actual denom (i.e. uatom, uscrt) used by the blockchain.
+              coinMinimalDenom: "uatom",
+              // # of decimal points to convert minimal denomination to user-facing denomination.
               coinDecimals: 6,
+              // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
+              // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
+              // coinGeckoId: ""
             },
           ],
+          coinType: 118,
           gasPriceStep: {
             low: 0.01,
             average: 0.025,
             high: 0.04,
           },
-          coinType: 118,
         });
       } catch (e) {
         console.error("Failed to suggest the chain", e);
@@ -171,8 +196,8 @@ const ConnectWalletModal = () => {
 
     const registry = new Registry();
     registry.register(
-      "/rosenlabs.xchain.xchain.MsgSendMsgMintRequest",
-      MsgSendMsgMintRequest
+      "/rosenlabs.xchain.xchain.MsgBridgeRequest",
+      MsgBridgeRequest
     );
     const options = {
       registry: registry,
@@ -184,21 +209,16 @@ const ConnectWalletModal = () => {
       options
     );
 
-    const value: MsgSendMsgMintRequest = {
-      sender: accounts[0].address,
-      port: "bridge",
-      channelID: "channel-1",
-      timeoutTimestamp: 100,
+    const value: MsgBridgeRequest = {
+      signer: accounts[0].address,
       reciever: "cosmos184n5ltlkjt3dmwk29cwhxgqkwhlgr7lssyxv3z",
       amount: 123,
       fee: 1,
-      tokenId: 0,
-      srcChainId: 0,
       destChainId: 1,
     };
 
     const msg = {
-      typeUrl: "/rosenlabs.xchain.xchain.MsgSendMsgMintRequest",
+      typeUrl: "/rosenlabs.xchain.xchain.MsgBridgeRequest",
       value,
     };
     const fee = {
@@ -239,28 +259,28 @@ const ConnectWalletModal = () => {
   };
 
   // handle logic to recognize the connector currently being activated
-  const [activatingConnector, setActivatingConnector] = useState<any>()
+  const [activatingConnector, setActivatingConnector] = useState<any>();
 
   // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
-  const triedEager = useEagerConnect()
+  const triedEager = useEagerConnect();
 
   // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-  useInactiveListener(!triedEager || !!activatingConnector)
+  useInactiveListener(!triedEager || !!activatingConnector);
 
   useEffect(() => {
     if (error && error.name === "UnsupportedChainIdError") {
       //TODO error when not support chain
     }
-  }, [error])
+  }, [error]);
 
   const connectToMetamask = async () => {
-    setActivatingConnector(injected)
-    activate(injected)
+    setActivatingConnector(injected);
+    activate(injected);
     modalContext.dispatch({
       type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
       payload: false,
     });
-  }
+  };
 
   return (
     <>
