@@ -120,8 +120,8 @@ const ConnectWalletModal = () => {
           rpc: "http://0.0.0.0:26657",
           rest: "http://0.0.0.0:1317",
           stakeCurrency: {
-            coinDenom: "ATOM",
-            coinMinimalDenom: "uatom",
+            coinDenom: "ICE",
+            coinMinimalDenom: "token",
             coinDecimals: 6,
           },
           bip44: {
@@ -151,7 +151,7 @@ const ConnectWalletModal = () => {
               // Coin denomination to be displayed to the user.
               coinDenom: "ICE",
               // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-              coinMinimalDenom: "uatom",
+              coinMinimalDenom: "token",
               // # of decimal points to convert minimal denomination to user-facing denomination.
               coinDecimals: 6,
               // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
@@ -165,7 +165,7 @@ const ConnectWalletModal = () => {
               // Coin denomination to be displayed to the user.
               coinDenom: "ICE",
               // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-              coinMinimalDenom: "uatom",
+              coinMinimalDenom: "token",
               // # of decimal points to convert minimal denomination to user-facing denomination.
               coinDecimals: 6,
               // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
