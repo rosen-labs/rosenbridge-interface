@@ -40,3 +40,15 @@ export const shortAddress = (address: string | null | undefined): string => {
       address.substr(length - 6, 6)
     );
 };
+
+export const mapChainNameToChainId = (
+  chainName: string | null | undefined
+): number => {
+  if (chainName === "Harmony One") {
+    return 1666700000;
+  } else if (chainName === "Polygon") {
+    return 80001;
+  } else {
+    return 0;
+  }
+};

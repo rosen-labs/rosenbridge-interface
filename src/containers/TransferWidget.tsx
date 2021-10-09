@@ -8,9 +8,9 @@ import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { useERC20 } from "../hooks/useERC20";
-import { DAI } from "../constants/Token";
-import { BRIDGE_POLYGON } from "../constants/Contract";
-import { shortAddress } from "../utils/helper";
+import { ICE } from "../constants/Token";
+import { BRIDGE } from "../constants/Contract";
+import { shortAddress, mapChainNameToChainId } from "../utils/helper";
 import BridgeABI from "../constants/abi/Bridge.json";
 import { useAppContext } from "../context/app/appContext";
 
@@ -182,7 +182,7 @@ const RecipientInput = styled.div`
 `;
 
 const TransferWidget = () => {
-  const { account, library } = useWeb3React();
+  const { account, library, chainId }: any = useWeb3React();
   const [isEditRecipient, setIsEditRecipient] = useState(false);
   const [isBridgeApproved, setIsBridgeApproved] = useState(false);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
@@ -190,12 +190,18 @@ const TransferWidget = () => {
   const [loading, setLoading] = useState(false);
   const modalContext = useModalContext();
   const appContext = useAppContext();
-  const tokenContract = useERC20(DAI, account, library);
+  const tokenContract = useERC20(
+    chainId ? ICE[chainId] : null,
+    account,
+    library
+  );
 
   useEffect(() => {
     if (!tokenContract || !account) return;
     const getTokenApprove = async () => {
-      const allowance = await tokenContract.allowance(BRIDGE_POLYGON);
+      const allowance = await tokenContract.allowance(
+        chainId ? BRIDGE[chainId] : null
+      );
       if (parseFloat(allowance) > 0) {
         setIsBridgeApproved(true);
         return;
@@ -207,7 +213,7 @@ const TransferWidget = () => {
 
   const onTokenApprove = useCallback(async () => {
     try {
-      const tx = await tokenContract.approve(BRIDGE_POLYGON);
+      const tx = await tokenContract.approve(chainId ? BRIDGE[chainId] : null);
       setLoading(true);
       await tx.wait();
     } catch (e) {
@@ -219,14 +225,18 @@ const TransferWidget = () => {
 
   const onSubmitToBridge = useCallback(async () => {
     try {
+      const desChainId =
+        appContext.state.selectedToChain &&
+        mapChainNameToChainId(appContext.state.selectedToChain.name);
       const bridgeContract = new ethers.Contract(
-        BRIDGE_POLYGON,
+        BRIDGE[chainId],
         BridgeABI,
         library.getSigner()
       );
-      const tx = await bridgeContract.sendToCosmos(
-        DAI,
-        ethers.constants.MaxUint256,
+      const tx = await bridgeContract.sendToChain(
+        chainId ? ICE[chainId] : null,
+        recipient,
+        desChainId,
         ethers.utils.parseEther(tokenAmount?.toString())
       );
       setLoading(true);
@@ -236,7 +246,7 @@ const TransferWidget = () => {
     } finally {
       setLoading(false);
     }
-  }, [tokenContract, account, tokenAmount]);
+  }, [tokenContract, tokenAmount]);
 
   return (
     <Container>
@@ -328,20 +338,24 @@ const TransferWidget = () => {
           </div>
         </SelectChain>
       </Grid>
-      <GasPrice>Current Gas Price: 0.001 ETH (~ 10.23$)</GasPrice>
+      <GasPrice>
+        Current Gas Price: 0.001{" "}
+        {appContext.state.selectedToChain &&
+        appContext.state.selectedToChain.name === "Polygon"
+          ? "Matic"
+          : "One"}{" "}
+        (~ 10.23$)
+      </GasPrice>
       <TransactionDetails>
         <h3>Tranasction Details</h3>
         <div>
           <div>Estimated Fees</div>
-          <div>
-            {Number(tokenAmount) * 0.01} {tokenContract?.symbol} (~{" "}
-            {tokenAmount * 0.01}$)
-          </div>
+          <div>0 {tokenContract?.symbol} (~ 0$)</div>
         </div>
         <div>
           <div>Estimated Received</div>
           <div>
-            {Number(tokenAmount) * 0.01} {tokenContract?.symbol}
+            {Number(tokenAmount)} {tokenContract?.symbol}
           </div>
         </div>
         <div>

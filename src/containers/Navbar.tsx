@@ -99,28 +99,48 @@ const Menubar = styled.div`
 `;
 
 const Navbar = () => {
-  const { account, library } = useWeb3React()
+  const { account, library, chainId } = useWeb3React();
   const modalContext = useModalContext();
   const appContext = useAppContext();
 
   useEffect(() => {
-    if(!account) return
+    if (!account) return;
     appContext.dispatch({
       type: AppActionType.SET_WALLET_INFO,
       payload: {
         address: account,
-        type: WalletType.METAMASK
+        type: WalletType.METAMASK,
       },
     });
-  }, [account, library])
+  }, [account, library]);
 
   return (
     <NavbarContainer>
       <Logo>Rosen Bridge</Logo>
       <Menubar>
         <CurrentNetwork>
-          <img src="https://polygon.technology/media-kit/matic-token-icon.png" />
-          <span>Polygon Mainnet</span>
+          {chainId === 80001 ? (
+            <>
+              <img src="https://polygon.technology/media-kit/matic-token-icon.png" />
+              <span>Polygon Mainnet</span>
+            </>
+          ) : chainId === 1666700000 ? (
+            <>
+              <img src="https://s2.coinmarketcap.com/static/img/coins/200x200/3945.png" />
+              <span>Harmony One</span>
+            </>
+          ) : (
+            <>
+              {appContext.state.walletInfo?.type === WalletType.KEPLR ? (
+                <>
+                  <img src="https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png" />
+                  <span>ICE Chain</span>
+                </>
+              ) : (
+                <span>Please selecte network</span>
+              )}
+            </>
+          )}
         </CurrentNetwork>
         {!appContext.state.walletInfo && (
           <>

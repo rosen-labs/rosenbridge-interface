@@ -12,7 +12,6 @@ import { ModalActionType } from "../context/modal/modalReducer";
 import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { MsgSendMsgMintRequest } from "../protos/tx";
-import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
 import { injected } from "../constants/connectors";
 import { MsgBridgeRequest } from "../protos/bridge";
@@ -192,6 +191,22 @@ const ConnectWalletModal = () => {
     const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
     const accounts = await offlineSigner.getAccounts();
 
+    if (accounts.length > 0) {
+      const account = accounts[0];
+
+      appContext.dispatch({
+        type: AppActionType.SET_WALLET_INFO,
+        payload: {
+          address: account.address,
+          type: WalletType.KEPLR,
+        },
+      });
+      modalContext.dispatch({
+        type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
+        payload: false,
+      });
+    }
+
     console.log(accounts, offlineSigner);
 
     const registry = new Registry();
@@ -240,32 +255,13 @@ const ConnectWalletModal = () => {
     //   fee
     // );
     // console.log({ a });
-
-    if (accounts.length > 0) {
-      const account = accounts[0];
-
-      appContext.dispatch({
-        type: AppActionType.SET_WALLET_INFO,
-        payload: {
-          address: account.address,
-          type: WalletType.KEPLR,
-        },
-      });
-      modalContext.dispatch({
-        type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
-        payload: false,
-      });
-    }
   };
 
   // handle logic to recognize the connector currently being activated
   const [activatingConnector, setActivatingConnector] = useState<any>();
 
-  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
-  const triedEager = useEagerConnect();
-
   // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-  useInactiveListener(!triedEager || !!activatingConnector);
+  useInactiveListener(!!activatingConnector);
 
   useEffect(() => {
     if (error && error.name === "UnsupportedChainIdError") {
@@ -344,6 +340,6 @@ const ConnectWalletModal = () => {
       </Modal>
     </>
   );
-};
+};;
 
 export default ConnectWalletModal;

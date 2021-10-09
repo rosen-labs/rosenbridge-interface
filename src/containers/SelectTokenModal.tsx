@@ -1,6 +1,10 @@
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import { CloseOutlined } from "@ant-design/icons";
 import Modal from "react-modal";
 import styled from "styled-components";
+import { useERC20 } from "../hooks/useERC20";
+import { ICE } from "../constants/Token";
 import { useAppContext } from "../context/app/appContext";
 import { AppActionType } from "../context/app/appReducer";
 import { useModalContext } from "../context/modal/modalContext";
@@ -124,8 +128,14 @@ const TokenItem = styled.div`
 `;
 
 const SelectTokenModal = () => {
+  const { account, library, chainId } = useWeb3React();
   const modalContext = useModalContext();
   const appContext = useAppContext();
+  const tokenContract = useERC20(
+    chainId ? ICE[chainId] : null,
+    account,
+    library
+  );
 
   return (
     <>
@@ -176,7 +186,7 @@ const SelectTokenModal = () => {
                 <h5>ICE</h5>
                 <span>ICE Chain Native Token</span>
               </div>
-              <div>1.6423</div>
+              <div>{tokenContract?.balance.toFixed(2) || 0}</div>
             </div>
           </TokenItem>
           {appContext.state.walletInfo?.type === WalletType.METAMASK && (
