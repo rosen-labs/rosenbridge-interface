@@ -80,7 +80,7 @@ const TokenItem = styled.div`
   display: flex;
   align-items: center;
   transition: 0.3s;
-  padding: 5px 15px;
+  padding: 7px 15px;
 
   &:hover {
     background: ${colors.lightBlue};
@@ -150,59 +150,59 @@ const SelectTokenModal = () => {
         <Scrollable>
           <TokenItem>
             <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
+              src="https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png"
+              alt="ICE"
             />
             <div>
               <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
+                <h5>ICE</h5>
+                <span>ICE Chain Native Token</span>
               </div>
               <div>1.6423</div>
             </div>
           </TokenItem>
-          <TokenItem>
+          <TokenItem style={{ cursor: "not-allowed" }}>
             <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
+              src="https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912"
+              alt="MATIC"
             />
             <div>
               <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
+                <h5>MATIC</h5>
+                <span>Polygon Native Token</span>
               </div>
-              <div>1.6423</div>
+              <div>0.0</div>
             </div>
           </TokenItem>
-          <TokenItem>
+          <TokenItem style={{ cursor: "not-allowed" }}>
             <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
+              src="https://s2.coinmarketcap.com/static/img/coins/200x200/3945.png"
+              alt="ONE"
             />
             <div>
               <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
+                <h5>ONE</h5>
+                <span>Harmony One Native Token</span>
               </div>
-              <div>1.6423</div>
+              <div>0.0</div>
             </div>
           </TokenItem>
-          <TokenItem>
+          <TokenItem style={{ cursor: "not-allowed" }}>
             <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
+              src="https://static.coincost.net/logo/cryptocurrency/terra-luna.png"
+              alt="LUNA"
             />
             <div>
               <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
+                <h5>LUNA</h5>
+                <span>Terra Native Token</span>
               </div>
-              <div>1.6423</div>
+              <div>0.0</div>
             </div>
           </TokenItem>
-          <TokenItem>
+          <TokenItem style={{ cursor: "not-allowed" }}>
             <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
+              src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png"
               alt="ETH"
             />
             <div>
@@ -210,33 +210,20 @@ const SelectTokenModal = () => {
                 <h5>ETH</h5>
                 <span>Ethereum Native Token</span>
               </div>
-              <div>1.6423</div>
+              <div>0.0</div>
             </div>
           </TokenItem>
-          <TokenItem>
+          <TokenItem style={{ cursor: "not-allowed" }}>
             <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
+              src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png"
+              alt="DAI"
             />
             <div>
               <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
+                <h5>DAI</h5>
+                <span>DAI Token</span>
               </div>
-              <div>1.6423</div>
-            </div>
-          </TokenItem>
-          <TokenItem>
-            <img
-              src="https://vee.finance/static/media/ETH.df265e36.svg"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>1.6423</div>
+              <div>0.0</div>
             </div>
           </TokenItem>
         </Scrollable>
