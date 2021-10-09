@@ -2,6 +2,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { useAppContext } from "../context/app/appContext";
+import { AppActionType } from "../context/app/appReducer";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { WalletType } from "../types/wallet";
@@ -151,7 +152,21 @@ const SelectTokenModal = () => {
         </Container>
         <Divider />
         <Scrollable>
-          <TokenItem>
+          <TokenItem
+            onClick={() => {
+              appContext.dispatch({
+                type: AppActionType.SET_TOKEN,
+                payload: {
+                  icon: "https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png",
+                  symbol: "ICE",
+                },
+              });
+              modalContext.dispatch({
+                type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
+                payload: false,
+              });
+            }}
+          >
             <img
               src="https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png"
               alt="ICE"

@@ -1,10 +1,11 @@
 import React from "react";
-import { SelectedChain } from "../../types/transferWidget";
+import { SelectedChain, SelectedToken } from "../../types/transferWidget";
 import { WalletInfo } from "../../types/wallet";
 import { AppAction, appReducer } from "./appReducer";
 
 export interface AppContextState {
   walletInfo: WalletInfo | null;
+  selectedToken: SelectedToken | null;
   selectedFromChain: SelectedChain | null;
   selectedToChain: SelectedChain | null;
 }
@@ -12,6 +13,7 @@ const initialState: AppContextState = {
   walletInfo: null,
   selectedFromChain: null,
   selectedToChain: null,
+  selectedToken: null,
 };
 
 interface AppContextProviderProps {

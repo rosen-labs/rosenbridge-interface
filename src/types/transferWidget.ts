@@ -3,3 +3,8 @@ export interface SelectedChain {
   icon: string;
   name: string;
 }
+
+export interface SelectedToken {
+  icon: string;
+  symbol: string;
+}

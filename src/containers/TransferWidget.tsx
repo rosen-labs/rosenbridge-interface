@@ -251,19 +251,30 @@ const TransferWidget = () => {
               });
             }}
           >
-            <img src="https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png" />
-            <span>ICE</span>
+            {!appContext.state.selectedToken && (
+              <>
+                <span>Select a token</span>
+              </>
+            )}
+            {appContext.state.selectedToken && (
+              <>
+                <img src={appContext.state.selectedToken.icon} />
+                <span>{appContext.state.selectedToken.symbol}</span>
+              </>
+            )}
             <span style={{ marginLeft: 7, fontSize: "0.8rem" }}>
               <DownOutlined />
             </span>
           </SelectToken>
           <div>
-            <TokenAmountInput
-              value={tokenAmount}
-              onChange={(e) => setTokenAmount(+(e.target.value || 0))}
-              type="number"
-              placeholder="0.0"
-            />
+            {appContext.state.selectedToken && (
+              <TokenAmountInput
+                value={tokenAmount}
+                onChange={(e) => setTokenAmount(+(e.target.value || 0))}
+                type="number"
+                placeholder="0.0"
+              />
+            )}
           </div>
         </div>
         <div>
