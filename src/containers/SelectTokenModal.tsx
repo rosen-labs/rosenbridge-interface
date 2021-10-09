@@ -1,8 +1,10 @@
 import { CloseOutlined } from "@ant-design/icons";
 import Modal from "react-modal";
 import styled from "styled-components";
+import { useAppContext } from "../context/app/appContext";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
+import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 
 const ModalStyle = {
@@ -121,20 +123,21 @@ const TokenItem = styled.div`
 `;
 
 const SelectTokenModal = () => {
-  const { state, dispatch } = useModalContext();
+  const modalContext = useModalContext();
+  const appContext = useAppContext();
 
   return (
     <>
       <Modal
         style={ModalStyle}
-        isOpen={state.isSelectTokenModalOpen}
+        isOpen={modalContext.state.isSelectTokenModalOpen}
         contentLabel="Select Token"
       >
         <Header>
           <span>Select Token</span>
           <span
             onClick={() => {
-              dispatch({
+              modalContext.dispatch({
                 type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
                 payload: false,
               });
@@ -161,71 +164,75 @@ const SelectTokenModal = () => {
               <div>1.6423</div>
             </div>
           </TokenItem>
-          <TokenItem style={{ cursor: "not-allowed" }}>
-            <img
-              src="https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912"
-              alt="MATIC"
-            />
-            <div>
-              <div>
-                <h5>MATIC</h5>
-                <span>Polygon Native Token</span>
-              </div>
-              <div>0.0</div>
-            </div>
-          </TokenItem>
-          <TokenItem style={{ cursor: "not-allowed" }}>
-            <img
-              src="https://s2.coinmarketcap.com/static/img/coins/200x200/3945.png"
-              alt="ONE"
-            />
-            <div>
-              <div>
-                <h5>ONE</h5>
-                <span>Harmony One Native Token</span>
-              </div>
-              <div>0.0</div>
-            </div>
-          </TokenItem>
-          <TokenItem style={{ cursor: "not-allowed" }}>
-            <img
-              src="https://static.coincost.net/logo/cryptocurrency/terra-luna.png"
-              alt="LUNA"
-            />
-            <div>
-              <div>
-                <h5>LUNA</h5>
-                <span>Terra Native Token</span>
-              </div>
-              <div>0.0</div>
-            </div>
-          </TokenItem>
-          <TokenItem style={{ cursor: "not-allowed" }}>
-            <img
-              src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png"
-              alt="ETH"
-            />
-            <div>
-              <div>
-                <h5>ETH</h5>
-                <span>Ethereum Native Token</span>
-              </div>
-              <div>0.0</div>
-            </div>
-          </TokenItem>
-          <TokenItem style={{ cursor: "not-allowed" }}>
-            <img
-              src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png"
-              alt="DAI"
-            />
-            <div>
-              <div>
-                <h5>DAI</h5>
-                <span>DAI Token</span>
-              </div>
-              <div>0.0</div>
-            </div>
-          </TokenItem>
+          {appContext.state.walletInfo?.type === WalletType.METAMASK && (
+            <>
+              <TokenItem style={{ cursor: "not-allowed" }}>
+                <img
+                  src="https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912"
+                  alt="MATIC"
+                />
+                <div>
+                  <div>
+                    <h5>MATIC</h5>
+                    <span>Polygon Native Token</span>
+                  </div>
+                  <div>0.0</div>
+                </div>
+              </TokenItem>
+              <TokenItem style={{ cursor: "not-allowed" }}>
+                <img
+                  src="https://s2.coinmarketcap.com/static/img/coins/200x200/3945.png"
+                  alt="ONE"
+                />
+                <div>
+                  <div>
+                    <h5>ONE</h5>
+                    <span>Harmony One Native Token</span>
+                  </div>
+                  <div>0.0</div>
+                </div>
+              </TokenItem>
+              <TokenItem style={{ cursor: "not-allowed" }}>
+                <img
+                  src="https://static.coincost.net/logo/cryptocurrency/terra-luna.png"
+                  alt="LUNA"
+                />
+                <div>
+                  <div>
+                    <h5>LUNA</h5>
+                    <span>Terra Native Token</span>
+                  </div>
+                  <div>0.0</div>
+                </div>
+              </TokenItem>
+              <TokenItem style={{ cursor: "not-allowed" }}>
+                <img
+                  src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png"
+                  alt="ETH"
+                />
+                <div>
+                  <div>
+                    <h5>ETH</h5>
+                    <span>Ethereum Native Token</span>
+                  </div>
+                  <div>0.0</div>
+                </div>
+              </TokenItem>
+              <TokenItem style={{ cursor: "not-allowed" }}>
+                <img
+                  src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png"
+                  alt="DAI"
+                />
+                <div>
+                  <div>
+                    <h5>DAI</h5>
+                    <span>DAI Token</span>
+                  </div>
+                  <div>0.0</div>
+                </div>
+              </TokenItem>
+            </>
+          )}
         </Scrollable>
       </Modal>
     </>
