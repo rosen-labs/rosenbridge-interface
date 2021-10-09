@@ -12,6 +12,7 @@ import { DAI } from "../constants/Token";
 import { BRIDGE_POLYGON } from "../constants/Contract";
 import { shortAddress } from "../utils/helper";
 import BridgeABI from "../constants/abi/Bridge.json";
+import { useAppContext } from "../context/app/appContext";
 
 const Container = styled.div`
   background: white;
@@ -94,6 +95,7 @@ const SelectChain = styled.div`
       width: 22px;
       height: 22px;
       margin-right: 7px;
+      border-radius: 50%;
     }
   }
 `;
@@ -187,6 +189,7 @@ const TransferWidget = () => {
   const [recipient, setRecipient] = useState("");
   const [loading, setLoading] = useState(false);
   const modalContext = useModalContext();
+  const appContext = useAppContext();
   const tokenContract = useERC20(DAI, account, library);
 
   useEffect(() => {
@@ -279,22 +282,35 @@ const TransferWidget = () => {
         >
           <span>From</span>
           <div>
-            <div>
-              <img src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png" />{" "}
-              Ethereum
-            </div>
+            {appContext.state.selectedFromChain && (
+              <div>
+                <img src={appContext.state.selectedFromChain.icon} />{" "}
+                {appContext.state.selectedFromChain.name}
+              </div>
+            )}
+            {!appContext.state.selectedFromChain && <div>Select Chain</div>}
             <div>
               <RightOutlined />
             </div>
           </div>
         </SelectChain>
-        <SelectChain>
+        <SelectChain
+          onClick={() => {
+            modalContext.dispatch({
+              type: ModalActionType.SET_SELECT_TO_CHAIN_MODAL_STATE,
+              payload: true,
+            });
+          }}
+        >
           <span>To</span>
           <div>
-            <div>
-              <img src="https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912" />{" "}
-              Polygon
-            </div>
+            {appContext.state.selectedToChain && (
+              <div>
+                <img src={appContext.state.selectedToChain.icon} />{" "}
+                {appContext.state.selectedToChain.name}
+              </div>
+            )}
+            {!appContext.state.selectedToChain && <div>Select Chain</div>}
             <div>
               <RightOutlined />
             </div>
