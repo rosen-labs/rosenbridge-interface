@@ -1,5 +1,5 @@
-import {ethers} from "ethers"
-import { useWeb3React } from "@web3-react/core"
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import { DownOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
@@ -8,10 +8,10 @@ import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { useERC20 } from "../hooks/useERC20";
-import {DAI} from "../constants/Token"
-import {BRIDGE_POLYGON} from "../constants/Contract"
-import {shortAddress} from "../utils/helper"
-import BridgeABI from "../constants/abi/Bridge.json"
+import { DAI } from "../constants/Token";
+import { BRIDGE_POLYGON } from "../constants/Contract";
+import { shortAddress } from "../utils/helper";
+import BridgeABI from "../constants/abi/Bridge.json";
 
 const Container = styled.div`
   background: white;
@@ -134,6 +134,7 @@ const SelectToken = styled.div`
     width: 22px;
     height: 22px;
     margin-right: 5px;
+    border-radius: 50%;
   }
 
   box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.03);
@@ -179,42 +180,39 @@ const RecipientInput = styled.div`
 `;
 
 const TransferWidget = () => {
-  const {account, library} = useWeb3React()
+  const { account, library } = useWeb3React();
   const [isEditRecipient, setIsEditRecipient] = useState(false);
-  const [isBridgeApproved, setIsBridgeApproved] = useState(false)
-  const [tokenAmount, setTokenAmount] = useState<number>(0)
-  const [loading, setLoading] = useState(false)
+  const [isBridgeApproved, setIsBridgeApproved] = useState(false);
+  const [tokenAmount, setTokenAmount] = useState<number>(0);
+  const [recipient, setRecipient] = useState("");
+  const [loading, setLoading] = useState(false);
   const modalContext = useModalContext();
-  const tokenContract = useERC20(DAI, account, library)
+  const tokenContract = useERC20(DAI, account, library);
 
   useEffect(() => {
-    if(!tokenContract || !account) return
+    if (!tokenContract || !account) return;
     const getTokenApprove = async () => {
-      const allowance = await tokenContract.allowance(
-        BRIDGE_POLYGON
-      )
+      const allowance = await tokenContract.allowance(BRIDGE_POLYGON);
       if (parseFloat(allowance) > 0) {
-        setIsBridgeApproved(true)
-        return
+        setIsBridgeApproved(true);
+        return;
       }
-      setIsBridgeApproved(false)
-    }
-    getTokenApprove()
-  }, [tokenContract, account])
+      setIsBridgeApproved(false);
+    };
+    getTokenApprove();
+  }, [tokenContract, account]);
 
   const onTokenApprove = useCallback(async () => {
     try {
-      const tx = await tokenContract.approve(
-        BRIDGE_POLYGON,
-      )
-      setLoading(true)
-      await tx.wait()
-    } catch(e) {
-      console.error(e)
+      const tx = await tokenContract.approve(BRIDGE_POLYGON);
+      setLoading(true);
+      await tx.wait();
+    } catch (e) {
+      console.error(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [tokenContract, account])
+  }, [tokenContract, account]);
 
   const onSubmitToBridge = useCallback(async () => {
     try {
@@ -222,20 +220,20 @@ const TransferWidget = () => {
         BRIDGE_POLYGON,
         BridgeABI,
         library.getSigner()
-      )
+      );
       const tx = await bridgeContract.sendToCosmos(
         DAI,
         ethers.constants.MaxUint256,
         ethers.utils.parseEther(tokenAmount?.toString())
-      )
-      setLoading(true)
-      await tx.wait()
-    } catch(e) {
-      console.error(e)
+      );
+      setLoading(true);
+      await tx.wait();
+    } catch (e) {
+      console.error(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [tokenContract, account, tokenAmount])
+  }, [tokenContract, account, tokenAmount]);
 
   return (
     <Container>
@@ -250,18 +248,23 @@ const TransferWidget = () => {
               });
             }}
           >
-            <img src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png" />
-            <span>DAI</span>
+            <img src="https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png" />
+            <span>ICE</span>
             <span style={{ marginLeft: 7, fontSize: "0.8rem" }}>
               <DownOutlined />
             </span>
           </SelectToken>
           <div>
-            <TokenAmountInput value={tokenAmount} type="number" placeholder="0.0" />
+            <TokenAmountInput
+              value={tokenAmount}
+              onChange={(e) => setTokenAmount(+(e.target.value || 0))}
+              type="number"
+              placeholder="0.0"
+            />
           </div>
         </div>
         <div>
-          <div>Balance: {tokenContract?.balance.toFixed(2) || 0} DAI</div>
+          <div>Balance: {tokenContract?.balance.toFixed(2) || 0} ICE</div>
           <div>~ {tokenContract?.balance.toFixed(2) || 0}$</div>
         </div>
       </TokenAmount>
@@ -303,11 +306,16 @@ const TransferWidget = () => {
         <h3>Tranasction Details</h3>
         <div>
           <div>Estimated Fees</div>
-          <div>{Number(tokenAmount)*0.01} {tokenContract?.symbol} (~ {tokenAmount*0.01}$)</div>
+          <div>
+            {Number(tokenAmount) * 0.01} {tokenContract?.symbol} (~{" "}
+            {tokenAmount * 0.01}$)
+          </div>
         </div>
         <div>
           <div>Estimated Received</div>
-          <div>{Number(tokenAmount)*0.01} {tokenContract?.symbol}</div>
+          <div>
+            {Number(tokenAmount) * 0.01} {tokenContract?.symbol}
+          </div>
         </div>
         <div>
           <div>Sender</div>
@@ -332,10 +340,22 @@ const TransferWidget = () => {
       {isEditRecipient && (
         <RecipientInput>
           <div>Recipient Address</div>
-          <input placeholder="0x0000000000000000000000000000000000000000" />
+          <input
+            value={recipient}
+            onChange={(e) => setRecipient(e.target.value)}
+            placeholder="0x0000000000000000000000000000000000000000"
+          />
         </RecipientInput>
       )}
-      {!isBridgeApproved ? <PrimaryBlockButton onClick={onTokenApprove}>Approve {tokenContract?.symbol} {loading && "..."}</PrimaryBlockButton> : <PrimaryBlockButton onClick={onSubmitToBridge}>Confirm Transaction</PrimaryBlockButton>}
+      {!isBridgeApproved ? (
+        <PrimaryBlockButton onClick={onTokenApprove}>
+          Approve {tokenContract?.symbol} {loading && "..."}
+        </PrimaryBlockButton>
+      ) : (
+        <PrimaryBlockButton onClick={onSubmitToBridge}>
+          Confirm Transaction
+        </PrimaryBlockButton>
+      )}
     </Container>
   );
 };
