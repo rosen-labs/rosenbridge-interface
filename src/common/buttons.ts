@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { blueTemplate, colors, withOpacity } from "../utils/styled";
+import {
+  blueTemplate,
+  colors,
+  darkBlueTemplate,
+  withOpacity,
+} from "../utils/styled";
 
 const ButtonStyle = styled.button`
   border: 0;
@@ -23,11 +28,13 @@ export const Button = styled(ButtonStyle)`
 
 export const DisabledButton = styled(ButtonStyle)`
   background: ${colors.lightBlue};
+  color: ${withOpacity(darkBlueTemplate, 0.65)};
   width: 100%;
   padding: 12px;
   display: flex;
   justify-content: center;
   border-radius: 16px;
+  cursor: not-allowed;
 `;
 
 export const PrimaryButton = styled(ButtonStyle)`
