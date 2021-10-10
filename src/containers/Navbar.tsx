@@ -12,13 +12,15 @@ import { SigningCosmosClient } from "@cosmjs/launchpad";
 import { useEffect } from "react";
 import { useAppContext } from "../context/app/appContext";
 import { formatWalletAddress } from "../utils/helper";
-import { POLY_WSS, HARMONY_WSS, ROSEN_WSS } from "../constants/Rpc";
+import { POLY_WSS, HARMONY_WSS, ROSEN_WSS, ICE_WSS } from "../constants/Rpc";
 import { BRIDGE } from "../constants/Contract";
 import { ICE } from "../constants/Token";
 import { Button } from "../common/buttons";
 
 const web3 = new Web3();
 
+const rosenProvider = new WebSocket(ROSEN_WSS);
+const iceProvider = new WebSocket(ICE_WSS);
 const polyProvider = new ethers.providers.WebSocketProvider(POLY_WSS);
 const harmonyProvider = new ethers.providers.WebSocketProvider(HARMONY_WSS);
 
@@ -110,6 +112,20 @@ const Menubar = styled.div`
   align-items: center;
 `;
 
+// function convert(msg) {
+//   const prefix = 'bridging_mint.'
+//   let result = {}
+//   for (const [key, value] of Object.entries(
+//     JSON.parse(msg.data).result.events
+//   )) {
+//     if (key.startsWith(prefix)) {
+//       const newKey = key.replace(prefix, '')
+//       result[newKey] = value[0]
+//     }
+//   }
+//   return result
+// }
+
 const Navbar = () => {
   const { account, library, chainId } = useWeb3React();
   const modalContext = useModalContext();
@@ -127,6 +143,37 @@ const Navbar = () => {
   }, [account, library]);
 
   useEffect(() => {
+    iceProvider.addEventListener('open', function (event) {
+      rosenProvider.send(JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'subscribe',
+        id: 0,
+        params: {
+          query: "tm.event='Tx' AND bridging_mint.event_name='bridging_mint'",
+        },
+      }));
+  });
+
+    iceProvider.addEventListener('message', function (event) {
+      console.log(event.data);
+    })
+
+
+    rosenProvider.addEventListener('open', function (event) {
+          rosenProvider.send(JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'subscribe',
+            id: 0,
+            params: {
+              query: "tm.event='Tx' AND bridging_mint.event_name='bridging_mint'",
+            },
+          }));
+    });
+
+    rosenProvider.addEventListener('message', function (event) {
+      console.log(event.data);
+    });
+
     polyProvider.on(
       {
         address: BRIDGE[80001],
@@ -152,7 +199,7 @@ const Navbar = () => {
           const currentTxHistory: TransactionHistory[] | any =
             JSON.parse(prevTxHistory);
           const currentTx: TransactionHistory = {
-            uid: result.transactionHash,
+            UID: result.transactionHash,
             event_name: eventName,
             reciever: reciever,
             amount: Number(amount),
@@ -195,7 +242,7 @@ const Navbar = () => {
           const currentTxHistory: TransactionHistory[] | any =
             JSON.parse(prevTxHistory);
           const currentTx: TransactionHistory = {
-            uid: result.transactionHash,
+            UID: result.transactionHash,
             event_name: eventName,
             reciever: reciever,
             amount: Number(amount),
@@ -238,7 +285,7 @@ const Navbar = () => {
           const currentTxHistory: TransactionHistory[] | any =
             JSON.parse(prevTxHistory);
           const currentTx: TransactionHistory = {
-            uid: result.transactionHash,
+            UID: result.transactionHash,
             event_name: eventName,
             reciever: reciever,
             amount: Number(amount),
@@ -281,7 +328,7 @@ const Navbar = () => {
           const currentTxHistory: TransactionHistory[] | any =
             JSON.parse(prevTxHistory);
           const currentTx: TransactionHistory = {
-            uid: result.transactionHash,
+            UID: result.transactionHash,
             event_name: eventName,
             reciever: reciever,
             amount: Number(amount),
