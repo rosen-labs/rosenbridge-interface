@@ -11,11 +11,17 @@ import { colors } from "../utils/styled";
 import { SigningCosmosClient } from "@cosmjs/launchpad";
 import { useEffect } from "react";
 import { useAppContext } from "../context/app/appContext";
-import { formatWalletAddress } from "../utils/helper";
+import {
+  formatWalletAddress,
+  mapChainIDToName,
+  mapChainNameToChainId,
+  mapChainIdToNameEVM,
+} from "../utils/helper";
 import { POLY_WSS, HARMONY_WSS, ROSEN_WSS, ICE_WSS } from "../constants/Rpc";
 import { BRIDGE } from "../constants/Contract";
 import { ICE } from "../constants/Token";
 import { Button } from "../common/buttons";
+import { notification } from "antd";
 
 const web3 = new Web3();
 
@@ -130,6 +136,7 @@ const Navbar = () => {
   const { account, library, chainId } = useWeb3React();
   const modalContext = useModalContext();
   const appContext = useAppContext();
+  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     if (!account) return;
@@ -187,11 +194,22 @@ const Navbar = () => {
         contract: convertEvent.contract,
         origin_chain: 1,
       };
-      currentTxHistory.push(currentTx);
-      window.localStorage.setItem(
-        "txHistory",
-        JSON.stringify(currentTxHistory)
-      );
+
+      api.info({
+        message: `Transaction submitted`,
+        description: `Transfering ${
+          convertEvent.amount
+        } ICE to ${mapChainIDToName(convertEvent.dest_chain_id)}`,
+        placement: "bottomRight",
+      });
+
+      // const fromChain =
+
+      // currentTxHistory.push(currentTx);
+      // window.localStorage.setItem(
+      //   "txHistory",
+      //   JSON.stringify(currentTxHistory)
+      // );
     });
 
     rosenProvider.addEventListener("open", function (event) {
@@ -225,11 +243,16 @@ const Navbar = () => {
         contract: convertEvent.contract,
         origin_chain: 99,
       };
-      currentTxHistory.push(currentTx);
-      window.localStorage.setItem(
-        "txHistory",
-        JSON.stringify(currentTxHistory)
-      );
+      api.info({
+        message: `Transaction processing`,
+        description: `Processing transaction on rosen chain`,
+        placement: "bottomRight",
+      });
+      // currentTxHistory.push(currentTx);
+      // window.localStorage.setItem(
+      //   "txHistory",
+      //   JSON.stringify(currentTxHistory)
+      // );
     });
 
     polyProvider.on(
@@ -268,11 +291,25 @@ const Navbar = () => {
             contract: ICE[80001],
             origin_chain: 0,
           };
-          currentTxHistory.push(currentTx);
-          window.localStorage.setItem(
-            "txHistory",
-            JSON.stringify(currentTxHistory)
-          );
+          api.info({
+            message: `Transaction submitted`,
+            description: `Transfering ${ethers.utils.formatEther(
+              amount.toString()
+            )} ICE to ${mapChainIdToNameEVM(desChain)}`,
+            placement: "bottomRight",
+          });
+          setTimeout(() => {
+            api.info({
+              message: `Transaction processing`,
+              description: `Processing transaction on rosen chain`,
+              placement: "bottomRight",
+            });
+          }, 1000);
+          // currentTxHistory.push(currentTx);
+          // window.localStorage.setItem(
+          //   "txHistory",
+          //   JSON.stringify(currentTxHistory)
+          // );
         } else {
           const decodeData = ethers.utils.defaultAbiCoder.decode(
             ["uint256"],
@@ -312,11 +349,18 @@ const Navbar = () => {
             contract: ICE[80001],
             origin_chain: 0,
           };
-          currentTxHistory.push(currentTx);
-          window.localStorage.setItem(
-            "txHistory",
-            JSON.stringify(currentTxHistory)
-          );
+          api.success({
+            message: `Transaction success`,
+            description: `Transfered ${ethers.utils.formatEther(
+              amount.toString()
+            )} ICE to Polygon`,
+            placement: "bottomRight",
+          });
+          // currentTxHistory.push(currentTx);
+          // window.localStorage.setItem(
+          //   "txHistory",
+          //   JSON.stringify(currentTxHistory)
+          // );
         }
       }
     );
@@ -356,11 +400,25 @@ const Navbar = () => {
             contract: ICE[80001],
             origin_chain: 2,
           };
-          currentTxHistory.push(currentTx);
-          window.localStorage.setItem(
-            "txHistory",
-            JSON.stringify(currentTxHistory)
-          );
+          api.info({
+            message: `Transaction submitted`,
+            description: `Transfering ${ethers.utils.formatEther(
+              amount.toString()
+            )} ICE to ${mapChainIdToNameEVM(desChain)}`,
+            placement: "bottomRight",
+          });
+          setTimeout(() => {
+            api.info({
+              message: `Transaction processing`,
+              description: `Processing transaction on rosen chain`,
+              placement: "bottomRight",
+            });
+          }, 1000);
+          // currentTxHistory.push(currentTx);
+          // window.localStorage.setItem(
+          //   "txHistory",
+          //   JSON.stringify(currentTxHistory)
+          // );
         } else {
           const decodeData = ethers.utils.defaultAbiCoder.decode(
             ["uint256"],
@@ -400,11 +458,18 @@ const Navbar = () => {
             contract: ICE[80001],
             origin_chain: 2,
           };
-          currentTxHistory.push(currentTx);
-          window.localStorage.setItem(
-            "txHistory",
-            JSON.stringify(currentTxHistory)
-          );
+          api.success({
+            message: `Transaction success`,
+            description: `Transfered ${ethers.utils.formatEther(
+              amount.toString()
+            )} ICE to Harmony One`,
+            placement: "bottomRight",
+          });
+          // currentTxHistory.push(currentTx);
+          // window.localStorage.setItem(
+          //   "txHistory",
+          //   JSON.stringify(currentTxHistory)
+          // );
         }
       }
     );
@@ -412,6 +477,7 @@ const Navbar = () => {
 
   return (
     <NavbarContainer>
+      {contextHolder}
       <Logo>Rosen Bridge</Logo>
       <Menubar>
         <CurrentNetwork>
@@ -462,9 +528,6 @@ const Navbar = () => {
             }}
           >
             <span>{formatWalletAddress(appContext.state.walletInfo)}</span>
-            <span>
-              <div>1</div>
-            </span>
           </Address>
         )}
       </Menubar>

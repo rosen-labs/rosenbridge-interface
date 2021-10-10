@@ -42,7 +42,7 @@ export const getTokenLogoURL = (address: string): string => {
 };
 
 export const mapChainNameToChainId = (
-  chainName: string | null | undefined
+  chainName: string | null | undefined | number
 ): number => {
   if (chainName === "Harmony One") {
     return 1666700000;
@@ -50,6 +50,18 @@ export const mapChainNameToChainId = (
     return 80001;
   } else {
     return 0;
+  }
+};
+
+export const mapChainIdToNameEVM = (
+  chainName: null | undefined | number
+): string => {
+  if (chainName === 1666700000) {
+    return "Harmony One";
+  } else if (chainName === 80001) {
+    return "Polygon";
+  } else {
+    return "Rosen";
   }
 };
 
@@ -63,4 +75,15 @@ export const mapChainNameCosmosToChainId = (
   } else {
     return 0;
   }
+};
+
+export const mapChainIDToName = (id: number | string): any => {
+  const map: any = {
+    0: "Polygon",
+    1: "Ice Chain",
+    2: "Harmony",
+    99: "Rosen Chain",
+  };
+
+  return map[id];
 };
