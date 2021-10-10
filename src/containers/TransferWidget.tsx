@@ -10,7 +10,11 @@ import { ModalActionType } from "../context/modal/modalReducer";
 import { useERC20 } from "../hooks/useERC20";
 import { ICE } from "../constants/Token";
 import { BRIDGE } from "../constants/Contract";
-import { shortAddress, mapChainNameToChainId } from "../utils/helper";
+import {
+  mapChainNameToChainId,
+  formatWalletAddress,
+  formatAddress,
+} from "../utils/helper";
 import BridgeABI from "../constants/abi/Bridge.json";
 import { useAppContext } from "../context/app/appContext";
 
@@ -360,7 +364,7 @@ const TransferWidget = () => {
         </div>
         <div>
           <div>Sender</div>
-          <div>{shortAddress(account)}</div>
+          <div>{formatAddress(appContext.state.walletInfo?.address)}</div>
         </div>
         <div>
           <div>Recipient</div>
@@ -374,7 +378,7 @@ const TransferWidget = () => {
                 <EditOutlined /> Edit
               </EditButton>
             )}
-            0x68fc...C1a5
+            {formatAddress(recipient)}
           </div>
         </div>
       </TransactionDetails>
