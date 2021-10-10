@@ -13,6 +13,8 @@ import { BRIDGE } from "../constants/Contract";
 import { shortAddress, mapChainNameToChainId } from "../utils/helper";
 import BridgeABI from "../constants/abi/Bridge.json";
 import { useAppContext } from "../context/app/appContext";
+import { WalletType } from "../types/wallet";
+import { formatWalletAddress } from "../utils/helper";
 
 const Container = styled.div`
   background: white;
@@ -288,8 +290,19 @@ const TransferWidget = () => {
           </div>
         </div>
         <div>
-          <div>Balance: {tokenContract?.balance.toFixed(2) || 0} ICE</div>
-          <div>~ {tokenContract?.balance.toFixed(2) || 0}$</div>
+          <div>
+            Balance:{" "}
+            {(appContext.state.selectedToken &&
+              tokenContract?.balance.toFixed(2)) ||
+              0}
+          </div>
+          <div>
+            ~{" "}
+            {(appContext.state.selectedToken &&
+              tokenContract?.balance.toFixed(2)) ||
+              0}
+            $
+          </div>
         </div>
       </TokenAmount>
       <Grid>
@@ -360,7 +373,7 @@ const TransferWidget = () => {
         </div>
         <div>
           <div>Sender</div>
-          <div>{shortAddress(account)}</div>
+          <div>{formatWalletAddress(appContext.state.walletInfo)}</div>
         </div>
         <div>
           <div>Recipient</div>
@@ -374,7 +387,7 @@ const TransferWidget = () => {
                 <EditOutlined /> Edit
               </EditButton>
             )}
-            0x68fc...C1a5
+            {formatWalletAddress(appContext.state.walletInfo)}
           </div>
         </div>
       </TransactionDetails>
@@ -388,13 +401,25 @@ const TransferWidget = () => {
           />
         </RecipientInput>
       )}
-      {!isBridgeApproved ? (
+      {!appContext.state.walletInfo ? (
+        <PrimaryBlockButton
+          onClick={() => {
+            modalContext.dispatch({
+              type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
+              payload: true,
+            });
+          }}
+        >
+          Connect Wallet
+        </PrimaryBlockButton>
+      ) : !isBridgeApproved &&
+        appContext.state.walletInfo?.type !== WalletType.KEPLR ? (
         <PrimaryBlockButton onClick={onTokenApprove}>
           Approve {tokenContract?.symbol} {loading && "..."}
         </PrimaryBlockButton>
       ) : (
         <PrimaryBlockButton onClick={onSubmitToBridge}>
-          Confirm Transaction
+          Confirm Transaction {loading && "..."}
         </PrimaryBlockButton>
       )}
     </Container>

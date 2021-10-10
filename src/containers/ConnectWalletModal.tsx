@@ -257,12 +257,6 @@ const ConnectWalletModal = () => {
     // console.log({ a });
   };
 
-  // handle logic to recognize the connector currently being activated
-  const [activatingConnector, setActivatingConnector] = useState<any>();
-
-  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-  useInactiveListener(!!activatingConnector);
-
   useEffect(() => {
     if (error && error.name === "UnsupportedChainIdError") {
       //TODO error when not support chain
@@ -270,7 +264,6 @@ const ConnectWalletModal = () => {
   }, [error]);
 
   const connectToMetamask = async () => {
-    setActivatingConnector(injected);
     activate(injected);
     modalContext.dispatch({
       type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,

@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components";
-import { useWeb3React } from "@web3-react/core"
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { AppActionType } from "../context/app/appReducer";
@@ -9,6 +10,11 @@ import { SigningCosmosClient } from "@cosmjs/launchpad";
 import { useEffect } from "react";
 import { useAppContext } from "../context/app/appContext";
 import { formatWalletAddress } from "../utils/helper";
+import { POLY_WSS, HARMONY_WSS, ROSEN_WSS } from "../constants/Rpc";
+import { BRIDGE } from "../constants/Contract";
+
+const polyProvider = new ethers.providers.WebSocketProvider(POLY_WSS);
+const harmonyProvider = new ethers.providers.WebSocketProvider(HARMONY_WSS);
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -114,6 +120,49 @@ const Navbar = () => {
     });
   }, [account, library]);
 
+  useEffect(() => {
+    polyProvider.on(
+      {
+        address: BRIDGE[80001],
+      },
+      async (result) => {
+        const { data, topics } = result;
+        const decodeData = ethers.utils.defaultAbiCoder.decode(
+          ["address", "string", "uint256", "uint256"],
+          data
+        );
+
+        const tokenContract = decodeData[0];
+        const reciever = decodeData[1].toString();
+        const sourceChain = decodeData[2].toString();
+        const amount = decodeData[3].toString();
+        const desChain = parseInt(topics[2], 16);
+
+        console.log(result);
+      }
+    );
+    harmonyProvider.on(
+      {
+        address: BRIDGE[1666700000],
+      },
+      async (result) => {
+        const { data, topics } = result;
+        const decodeData = ethers.utils.defaultAbiCoder.decode(
+          ["address", "string", "uint256", "uint256"],
+          data
+        );
+
+        const tokenContract = decodeData[0];
+        const reciever = decodeData[1].toString();
+        const sourceChain = decodeData[2].toString();
+        const amount = decodeData[3].toString();
+        const desChain = parseInt(topics[2], 16);
+
+        console.log(result);
+      }
+    );
+  }, []);
+
   return (
     <NavbarContainer>
       <Logo>Rosen Bridge</Logo>
@@ -122,12 +171,12 @@ const Navbar = () => {
           {chainId === 80001 ? (
             <>
               <img src="https://polygon.technology/media-kit/matic-token-icon.png" />
-              <span>Polygon Mainnet</span>
+              <span>Polygon Mumbai Testnet</span>
             </>
           ) : chainId === 1666700000 ? (
             <>
               <img src="https://s2.coinmarketcap.com/static/img/coins/200x200/3945.png" />
-              <span>Harmony One</span>
+              <span>Harmony One Testnet</span>
             </>
           ) : (
             <>
