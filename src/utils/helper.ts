@@ -52,3 +52,15 @@ export const mapChainNameToChainId = (
     return 0;
   }
 };
+
+export const mapChainNameCosmosToChainId = (
+  chainName: string | null | undefined
+): number => {
+  if (chainName === "Harmony One") {
+    return 2;
+  } else if (chainName === "Polygon") {
+    return 0;
+  } else {
+    return 0;
+  }
+};

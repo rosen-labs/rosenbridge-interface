@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "rosenlabs.xchain.xchain";
+export const protobufPackage = "rosen_labs.xchain.xchain";
 
 export interface MsgBridgeRequest {
   reciever: string;

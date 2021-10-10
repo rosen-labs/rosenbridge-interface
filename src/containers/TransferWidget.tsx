@@ -1,8 +1,11 @@
 import { ethers } from "ethers";
+import { Registry } from "@cosmjs/proto-signing";
+import { MsgBridgeRequest } from "../protos/bridge";
 import { useWeb3React } from "@web3-react/core";
 import { DownOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { SigningStargateClient, coins } from "@cosmjs/stargate";
 import { DisabledButton, PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { useModalContext } from "../context/modal/modalContext";
@@ -12,6 +15,7 @@ import { ICE } from "../constants/Token";
 import { BRIDGE } from "../constants/Contract";
 import {
   mapChainNameToChainId,
+  mapChainNameCosmosToChainId,
   formatWalletAddress,
   formatAddress,
 } from "../utils/helper";
@@ -19,6 +23,7 @@ import BridgeABI from "../constants/abi/Bridge.json";
 import { useAppContext } from "../context/app/appContext";
 import { WalletType } from "../types/wallet";
 
+const COSMOS_CHAIN_ID = "x:0";
 const Container = styled.div`
   background: white;
   border-radius: 16px;
@@ -191,6 +196,7 @@ const TransferWidget = () => {
   const [isEditRecipient, setIsEditRecipient] = useState(false);
   const [isBridgeApproved, setIsBridgeApproved] = useState(false);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
+  const [keplrBalance, setKeplrBalance] = useState<number>(0);
   const [recipient, setRecipient] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const modalContext = useModalContext();
@@ -254,9 +260,13 @@ const TransferWidget = () => {
       );
       const tx = await bridgeContract.sendToChain(
         chainId ? ICE[chainId] : null,
-        recipient,
+        appContext.state.walletInfo?.type === WalletType.KEPLR
+          ? recipient + `___${Date.now()}`
+          : recipient,
         desChainId,
-        ethers.utils.parseEther(tokenAmount?.toString())
+        desChainId === 0
+          ? 100
+          : ethers.utils.parseEther(tokenAmount?.toString())
       );
       setLoading(true);
       await tx.wait();
@@ -266,6 +276,82 @@ const TransferWidget = () => {
       setLoading(false);
     }
   }, [tokenContract, tokenAmount]);
+
+  const onSubmitToBridgeFromCosmos = useCallback(async () => {
+    const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
+    const accounts = await offlineSigner.getAccounts();
+    const desChainId: number = mapChainNameCosmosToChainId(
+      appContext.state.selectedToChain?.name
+    );
+    const registry = new Registry();
+    registry.register(
+      "/rosen_labs.xchain.xchain.MsgBridgeRequest",
+      MsgBridgeRequest
+    );
+    const options = {
+      registry: registry,
+      prefix: "xchain",
+    };
+    const client = await SigningStargateClient.connectWithSigner(
+      "http://165.232.162.158:26657",
+      offlineSigner,
+      options
+    );
+
+    const value: MsgBridgeRequest = {
+      signer: accounts[0].address,
+      reciever: recipient + `___${Date.now()}`,
+      amount: 100,
+      fee: 0,
+      destChainId: desChainId,
+    };
+
+    const msg = {
+      typeUrl: "/rosen_labs.xchain.xchain.MsgBridgeRequest",
+      value,
+    };
+    const fee = {
+      amount: coins(1, "token"),
+      gas: "180000",
+    };
+
+    await client.signAndBroadcast(
+      accounts[0].address,
+      [msg],
+      fee,
+      "TODO: Change This"
+    );
+  }, [tokenContract, tokenAmount]);
+
+  useEffect(() => {
+    if (appContext.state.walletInfo?.type !== WalletType.KEPLR) return;
+    const getKeplr = async () => {
+      // enable user wallet
+      const registry = new Registry();
+      registry.register(
+        "/rosenlabs.xchain.xchain.MsgBridgeRequest",
+        MsgBridgeRequest
+      );
+      const options = {
+        registry: registry,
+        prefix: "xchain",
+      };
+      await window.keplr.enable(COSMOS_CHAIN_ID);
+      const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
+      const accounts = await offlineSigner.getAccounts();
+      const client = await SigningStargateClient.connectWithSigner(
+        "http://165.232.162.158:26657",
+        offlineSigner,
+        options
+      );
+      const keplrBalance = await client.getBalance(
+        accounts[0].address,
+        "token"
+      );
+      setKeplrBalance(parseFloat(keplrBalance.amount));
+    };
+    getKeplr();
+  }, [appContext.state.walletInfo]);
 
   return (
     <Container>
@@ -311,17 +397,13 @@ const TransferWidget = () => {
         <div>
           <div>
             Balance:{" "}
-            {(appContext.state.selectedToken &&
-              tokenContract?.balance.toFixed(2)) ||
-              0}
+            {appContext.state.walletInfo?.type === WalletType.KEPLR
+              ? keplrBalance
+              : (appContext.state.selectedToken &&
+                  tokenContract?.balance.toFixed(2)) ||
+                0}
           </div>
-          <div>
-            ~{" "}
-            {(appContext.state.selectedToken &&
-              tokenContract?.balance.toFixed(2)) ||
-              0}
-            $
-          </div>
+          <div>~{tokenAmount}$</div>
         </div>
       </TokenAmount>
       <Grid>
@@ -428,7 +510,8 @@ const TransferWidget = () => {
       )}
       {appContext.state.walletInfo && (
         <>
-          {!isBridgeApproved ? (
+          {!isBridgeApproved &&
+          appContext.state.walletInfo?.type !== WalletType.KEPLR ? (
             <>
               {appContext.state.selectedToken && (
                 <PrimaryBlockButton onClick={onTokenApprove}>
@@ -444,7 +527,13 @@ const TransferWidget = () => {
               {appContext.state.selectedFromChain &&
               appContext.state.selectedToChain &&
               recipient ? (
-                <PrimaryBlockButton onClick={onSubmitToBridge}>
+                <PrimaryBlockButton
+                  onClick={() => {
+                    appContext.state.walletInfo?.type === WalletType.KEPLR
+                      ? onSubmitToBridgeFromCosmos()
+                      : onSubmitToBridge();
+                  }}
+                >
                   Confirm Transaction
                 </PrimaryBlockButton>
               ) : (

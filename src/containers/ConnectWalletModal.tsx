@@ -99,7 +99,7 @@ declare global {
   }
 }
 
-const COSMOS_CHAIN_ID = "cosmos:ice-chain";
+const COSMOS_CHAIN_ID = "x:0";
 const ConnectWalletModal = () => {
   const modalContext = useModalContext();
   const appContext = useAppContext();
@@ -125,12 +125,12 @@ const ConnectWalletModal = () => {
         await window.keplr.experimentalSuggestChain({
           chainId: COSMOS_CHAIN_ID,
           chainName: "ICE Chain",
-          rpc: "http://0.0.0.0:26657",
-          rest: "http://0.0.0.0:1317",
+          rpc: "http://165.232.162.158:26657",
+          rest: "http://165.232.162.158:1317",
           stakeCurrency: {
             coinDenom: "ICE",
             coinMinimalDenom: "token",
-            coinDecimals: 6,
+            coinDecimals: 0,
           },
           bip44: {
             coinType: 118,
@@ -161,7 +161,7 @@ const ConnectWalletModal = () => {
               // Actual denom (i.e. uatom, uscrt) used by the blockchain.
               coinMinimalDenom: "token",
               // # of decimal points to convert minimal denomination to user-facing denomination.
-              coinDecimals: 6,
+              coinDecimals: 0,
               // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
               // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
               // coinGeckoId: ""
@@ -175,7 +175,7 @@ const ConnectWalletModal = () => {
               // Actual denom (i.e. uatom, uscrt) used by the blockchain.
               coinMinimalDenom: "token",
               // # of decimal points to convert minimal denomination to user-facing denomination.
-              coinDecimals: 6,
+              coinDecimals: 0,
               // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
               // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
               // coinGeckoId: ""
@@ -183,9 +183,9 @@ const ConnectWalletModal = () => {
           ],
           coinType: 118,
           gasPriceStep: {
-            low: 0.01,
-            average: 0.025,
-            high: 0.04,
+            low: 1,
+            average: 2,
+            high: 3,
           },
         });
       } catch (e) {
@@ -216,47 +216,6 @@ const ConnectWalletModal = () => {
       });
     }
 
-    console.log(accounts, offlineSigner);
-
-    const registry = new Registry();
-    registry.register(
-      "/rosenlabs.xchain.xchain.MsgBridgeRequest",
-      MsgBridgeRequest
-    );
-    const options = {
-      registry: registry,
-      prefix: "xchain",
-    };
-    const client = await SigningStargateClient.connectWithSigner(
-      "http://0.0.0.0:26657",
-      offlineSigner,
-      options
-    );
-
-    const value: MsgBridgeRequest = {
-      signer: accounts[0].address,
-      reciever: "cosmos184n5ltlkjt3dmwk29cwhxgqkwhlgr7lssyxv3z",
-      amount: 123,
-      fee: 1,
-      destChainId: 1,
-    };
-
-    const msg = {
-      typeUrl: "/rosenlabs.xchain.xchain.MsgBridgeRequest",
-      value,
-    };
-    const fee = {
-      amount: coins(1, "token"),
-      gas: "180000",
-    };
-
-    const seq = await client.signAndBroadcast(
-      accounts[0].address,
-      [msg],
-      fee,
-      "TODO: Change This"
-    );
-    console.log({ seq });
     // const a = await client.sendTokens(
     //   accounts[0].address,
     //   "cosmos1qqae7949a97krudpg2nq299rlp449z0qc2989e",
