@@ -13,10 +13,7 @@ const initialState: AppContextState = {
   walletInfo: null,
   selectedFromChain: null,
   selectedToChain: null,
-  selectedToken: {
-    icon: "https://i.pinimg.com/originals/eb/7f/9f/eb7f9f8bd8116d1bf489a199402c25fd.png",
-    symbol: "ICE",
-  },
+  selectedToken: null,
 };
 
 interface AppContextProviderProps {

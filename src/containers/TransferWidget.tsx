@@ -259,10 +259,12 @@ const TransferWidget = () => {
         <div style={{ marginBottom: 5 }}>
           <SelectToken
             onClick={() => {
-              modalContext.dispatch({
-                type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
-                payload: true,
-              });
+              if (appContext.state.walletInfo) {
+                modalContext.dispatch({
+                  type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
+                  payload: true,
+                });
+              }
             }}
           >
             {!appContext.state.selectedToken && (
@@ -299,10 +301,12 @@ const TransferWidget = () => {
       <Grid>
         <SelectChain
           onClick={() => {
-            modalContext.dispatch({
-              type: ModalActionType.SET_SELECT_FROM_CHAIN_MODAL_STATE,
-              payload: true,
-            });
+            if (appContext.state.walletInfo) {
+              modalContext.dispatch({
+                type: ModalActionType.SET_SELECT_FROM_CHAIN_MODAL_STATE,
+                payload: true,
+              });
+            }
           }}
         >
           <span>From</span>
@@ -321,10 +325,12 @@ const TransferWidget = () => {
         </SelectChain>
         <SelectChain
           onClick={() => {
-            modalContext.dispatch({
-              type: ModalActionType.SET_SELECT_TO_CHAIN_MODAL_STATE,
-              payload: true,
-            });
+            if (appContext.state.walletInfo) {
+              modalContext.dispatch({
+                type: ModalActionType.SET_SELECT_TO_CHAIN_MODAL_STATE,
+                payload: true,
+              });
+            }
           }}
         >
           <span>To</span>
@@ -372,7 +378,9 @@ const TransferWidget = () => {
             {!isEditRecipient && (
               <EditButton
                 onClick={() => {
-                  setIsEditRecipient(true);
+                  if (appContext.state.walletInfo) {
+                    setIsEditRecipient(true);
+                  }
                 }}
               >
                 <EditOutlined /> Edit
