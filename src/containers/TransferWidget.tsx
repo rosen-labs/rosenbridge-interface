@@ -388,13 +388,29 @@ const TransferWidget = () => {
           />
         </RecipientInput>
       )}
-      {!isBridgeApproved ? (
-        <PrimaryBlockButton onClick={onTokenApprove}>
-          Approve {tokenContract?.symbol} {loading && "..."}
-        </PrimaryBlockButton>
-      ) : (
-        <PrimaryBlockButton onClick={onSubmitToBridge}>
-          Confirm Transaction
+      {appContext.state.walletInfo && (
+        <>
+          {!isBridgeApproved ? (
+            <PrimaryBlockButton onClick={onTokenApprove}>
+              Approve {tokenContract?.symbol} {loading && "..."}
+            </PrimaryBlockButton>
+          ) : (
+            <PrimaryBlockButton onClick={onSubmitToBridge}>
+              Confirm Transaction
+            </PrimaryBlockButton>
+          )}
+        </>
+      )}
+      {!appContext.state.walletInfo && (
+        <PrimaryBlockButton
+          onClick={() => {
+            modalContext.dispatch({
+              type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
+              payload: true,
+            });
+          }}
+        >
+          Connect to a wallet
         </PrimaryBlockButton>
       )}
     </Container>

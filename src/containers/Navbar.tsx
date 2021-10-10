@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { useWeb3React } from "@web3-react/core"
+import { useWeb3React } from "@web3-react/core";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { AppActionType } from "../context/app/appReducer";
@@ -9,6 +9,7 @@ import { SigningCosmosClient } from "@cosmjs/launchpad";
 import { useEffect } from "react";
 import { useAppContext } from "../context/app/appContext";
 import { formatWalletAddress } from "../utils/helper";
+import { Button } from "../common/buttons";
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -137,14 +138,14 @@ const Navbar = () => {
                   <span>ICE Chain</span>
                 </>
               ) : (
-                <span>Please selecte network</span>
+                <span>No Network Connected</span>
               )}
             </>
           )}
         </CurrentNetwork>
         {!appContext.state.walletInfo && (
-          <>
-            <button
+          <div style={{ marginLeft: 15 }}>
+            <Button
               onClick={() => {
                 modalContext.dispatch({
                   type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
@@ -153,8 +154,8 @@ const Navbar = () => {
               }}
             >
               Connect to a wallet
-            </button>
-          </>
+            </Button>
+          </div>
         )}
         {appContext.state.walletInfo && (
           <Address

@@ -6,41 +6,28 @@ const ButtonStyle = styled.button`
   color: #ccc;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 16px;
   transition: 0.25s;
   cursor: pointer;
 `;
 
 export const Button = styled(ButtonStyle)`
-  background: linear-gradient(
-    -30deg,
-    rgba(34, 36, 41, 0.5),
-    rgba(34, 36, 41, 0.7)
-  );
+  color: white;
+  background: ${colors.blue};
+  border-radius: 7px;
+  padding: 3px 12px;
+
   &:hover {
-    background: linear-gradient(
-      -30deg,
-      rgba(34, 36, 41, 0.65),
-      rgba(34, 36, 41, 0.9)
-    );
-    color: white;
+    background: ${withOpacity(blueTemplate, 0.9)};
   }
 `;
 
-export const DangerButton = styled(ButtonStyle)`
-  background: linear-gradient(
-    -30deg,
-    rgba(247, 2, 119, 0.5),
-    rgb(247, 2, 119, 0.7)
-  );
-  &:hover {
-    background: linear-gradient(
-      -30deg,
-      rgba(247, 2, 119, 0.65),
-      rgba(247, 2, 119, 0.9)
-    );
-    color: white;
-  }
+export const DisabledButton = styled(ButtonStyle)`
+  background: ${colors.lightBlue};
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  border-radius: 16px;
 `;
 
 export const PrimaryButton = styled(ButtonStyle)`
@@ -56,6 +43,7 @@ export const PrimaryBlockButton = styled(PrimaryButton)`
   padding: 12px;
   display: flex;
   justify-content: center;
+  border-radius: 16px;
 
   & svg {
     transform: scale(1.5);
