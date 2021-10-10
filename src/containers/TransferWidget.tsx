@@ -259,14 +259,20 @@ const TransferWidget = () => {
         BridgeABI,
         library.getSigner()
       );
+      const uuid = Date.now();
       const tx = await bridgeContract.sendToChain(
         chainId ? ICE[chainId] : null,
         appContext.state.walletInfo?.type === WalletType.KEPLR
-          ? recipient + `___${Date.now()}`
+          ? recipient + `___${uuid}`
           : recipient,
         desChainId,
         ethers.utils.parseEther(tokenAmount.toString())
       );
+      const prevTxUser: string | null =
+        window.localStorage.getItem("txUser") ?? JSON.stringify("[]");
+      let currentTxUser: string[] | any = JSON.parse(prevTxUser);
+      currentTxUser = [...currentTxUser, uuid];
+      window.localStorage.setItem("txUser", JSON.stringify(currentTxUser));
       setLoading(true);
       await tx.wait();
     } catch (e) {
@@ -274,6 +280,8 @@ const TransferWidget = () => {
     } finally {
       setLoading(false);
       setTokenAmount(0);
+      setRecipient(null);
+      setIsEditRecipient(false);
     }
   }, [tokenContract, tokenAmount]);
 
@@ -300,9 +308,17 @@ const TransferWidget = () => {
         options
       );
 
+      const uuid = Date.now();
+
+      const prevTxUser: string | null =
+        window.localStorage.getItem("txUser") ?? JSON.stringify("[]");
+      let currentTxUser: string[] | any = JSON.parse(prevTxUser);
+      currentTxUser = [...currentTxUser, uuid];
+      window.localStorage.setItem("txUser", JSON.stringify(currentTxUser));
+
       const value: MsgBridgeRequest = {
         signer: accounts[0].address,
-        reciever: recipient + `___${Date.now()}`,
+        reciever: recipient + `___${uuid}`,
         amount: Number(tokenAmount),
         fee: 0,
         destChainId: desChainId,
@@ -314,20 +330,22 @@ const TransferWidget = () => {
       };
       const fee = {
         amount: coins(1, "token"),
-        gas: "180000",
+        gas: "1",
       };
 
       await client.signAndBroadcast(
         accounts[0].address,
         [msg],
         fee,
-        "TODO: Change This"
+        "Trasfer token"
       );
     } catch (e) {
       console.error(e);
     } finally {
+      setIsEditRecipient(false);
       setLoading(false);
       setTokenAmount(0);
+      setRecipient(null);
     }
   }, [tokenContract, tokenAmount]);
 
@@ -536,7 +554,9 @@ const TransferWidget = () => {
                 </PrimaryBlockButton>
               )}
               {!appContext.state.selectedToken && (
-                <DisabledButton>Confirm Transaction</DisabledButton>
+                <DisabledButton>
+                  Confirm Transaction {loading && "..."}
+                </DisabledButton>
               )}
             </>
           ) : (
@@ -551,7 +571,7 @@ const TransferWidget = () => {
                       : onSubmitToBridge();
                   }}
                 >
-                  Confirm Transaction
+                  Confirm Transaction {loading && "..."}
                 </PrimaryBlockButton>
               ) : (
                 <DisabledButton>Confirm Transaction</DisabledButton>

@@ -183,9 +183,9 @@ const ConnectWalletModal = () => {
           ],
           coinType: 118,
           gasPriceStep: {
-            low: 1,
-            average: 2,
-            high: 3,
+            low: 0,
+            average: 0,
+            high: 0,
           },
         });
       } catch (e) {

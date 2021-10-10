@@ -8,6 +8,7 @@ export interface TransactionHistory {
   dest_chain_id: number;
   token_id: number;
   contract: string;
+  origin_chain: number;
 }
 
 export enum EventTxType {

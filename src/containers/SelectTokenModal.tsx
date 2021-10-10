@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { CloseOutlined } from "@ant-design/icons";
 import Modal from "react-modal";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useERC20 } from "../hooks/useERC20";
 import { ICE } from "../constants/Token";
@@ -11,6 +12,11 @@ import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
+import { SigningStargateClient, coins } from "@cosmjs/stargate";
+import { Registry } from "@cosmjs/proto-signing";
+import { MsgBridgeRequest } from "../protos/bridge";
+
+const COSMOS_CHAIN_ID = "x:0";
 
 const ModalStyle = {
   overlay: {
@@ -131,11 +137,42 @@ const SelectTokenModal = () => {
   const { account, library, chainId } = useWeb3React();
   const modalContext = useModalContext();
   const appContext = useAppContext();
+  const [keplrBalance, setKeplrBalance] = useState<number>(0);
   const tokenContract = useERC20(
     chainId ? ICE[chainId] : null,
     account,
     library
   );
+
+  useEffect(() => {
+    if (appContext.state.walletInfo?.type !== WalletType.KEPLR) return;
+    const getKeplr = async () => {
+      // enable user wallet
+      const registry = new Registry();
+      registry.register(
+        "/rosenlabs.xchain.xchain.MsgBridgeRequest",
+        MsgBridgeRequest
+      );
+      const options = {
+        registry: registry,
+        prefix: "xchain",
+      };
+      await window.keplr.enable(COSMOS_CHAIN_ID);
+      const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
+      const accounts = await offlineSigner.getAccounts();
+      const client = await SigningStargateClient.connectWithSigner(
+        "http://165.232.162.158:26657",
+        offlineSigner,
+        options
+      );
+      const keplrBalance = await client.getBalance(
+        accounts[0].address,
+        "token"
+      );
+      setKeplrBalance(parseFloat(keplrBalance.amount));
+    };
+    getKeplr();
+  }, [appContext.state.walletInfo]);
 
   return (
     <>
@@ -186,7 +223,11 @@ const SelectTokenModal = () => {
                 <h5>ICE</h5>
                 <span>ICE Chain Native Token</span>
               </div>
-              <div>{tokenContract?.balance.toFixed(2) || 0}</div>
+              <div>
+                {appContext.state.walletInfo?.type === WalletType.KEPLR
+                  ? keplrBalance
+                  : tokenContract?.balance.toFixed(2) || 0}
+              </div>
             </div>
           </TokenItem>
           {appContext.state.walletInfo?.type === WalletType.METAMASK && (

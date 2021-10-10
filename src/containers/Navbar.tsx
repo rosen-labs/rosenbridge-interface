@@ -143,35 +143,93 @@ const Navbar = () => {
   }, [account, library]);
 
   useEffect(() => {
-    iceProvider.addEventListener('open', function (event) {
-      rosenProvider.send(JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'subscribe',
-        id: 0,
-        params: {
-          query: "tm.event='Tx' AND bridging_mint.event_name='bridging_mint'",
-        },
-      }));
-  });
-
-    iceProvider.addEventListener('message', function (event) {
-      console.log(event.data);
-    })
-
-
-    rosenProvider.addEventListener('open', function (event) {
-          rosenProvider.send(JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'subscribe',
-            id: 0,
-            params: {
-              query: "tm.event='Tx' AND bridging_mint.event_name='bridging_mint'",
-            },
-          }));
+    iceProvider.addEventListener("open", function (event) {
+      rosenProvider.send(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          method: "subscribe",
+          id: 0,
+          params: {
+            query: "tm.event='Tx' AND bridging_mint.event_name='bridging_mint'",
+          },
+        })
+      );
     });
 
-    rosenProvider.addEventListener('message', function (event) {
-      console.log(event.data);
+    function convert(msg: any) {
+      const prefix = "bridging_mint.";
+      let result: any = {};
+      for (const data of Object.entries(JSON.parse(msg.data).result.events)) {
+        const _data = data as any;
+        if (_data[0].startsWith(prefix)) {
+          const newKey: any = _data[0].replace(prefix, "");
+          result[newKey] = _data[1][0];
+        }
+      }
+      return result;
+    }
+
+    iceProvider.addEventListener("message", function (event) {
+      const convertEvent = convert(event.data);
+      const prevTxHistory: string | null =
+        window.localStorage.getItem("txHistory") ?? JSON.stringify("[]");
+      const currentTxHistory: TransactionHistory[] | any =
+        JSON.parse(prevTxHistory);
+      const currentTx: TransactionHistory = {
+        UID: convertEvent.UID,
+        event_name: convertEvent.event_name,
+        reciever: convertEvent.reciever,
+        amount: Number(convertEvent.amount),
+        fee: 0,
+        src_chain_id: convertEvent.src_chain_id,
+        dest_chain_id: convertEvent.dest_chain_id,
+        token_id: convertEvent.token_id,
+        contract: convertEvent.contract,
+        origin_chain: 1,
+      };
+      currentTxHistory.push(currentTx);
+      window.localStorage.setItem(
+        "txHistory",
+        JSON.stringify(currentTxHistory)
+      );
+    });
+
+    rosenProvider.addEventListener("open", function (event) {
+      rosenProvider.send(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          method: "subscribe",
+          id: 0,
+          params: {
+            query: "tm.event='Tx' AND bridging_mint.event_name='bridging_mint'",
+          },
+        })
+      );
+    });
+
+    rosenProvider.addEventListener("message", function (event) {
+      const convertEvent = convert(event.data);
+      const prevTxHistory: string | null =
+        window.localStorage.getItem("txHistory") ?? JSON.stringify("[]");
+      const currentTxHistory: TransactionHistory[] | any =
+        JSON.parse(prevTxHistory);
+      const currentTx: TransactionHistory = {
+        UID: convertEvent.UID,
+        event_name: convertEvent.event_name,
+        reciever: convertEvent.reciever,
+        amount: Number(convertEvent.amount),
+        fee: 0,
+        src_chain_id: convertEvent.src_chain_id,
+        dest_chain_id: convertEvent.dest_chain_id,
+        token_id: convertEvent.token_id,
+        contract: convertEvent.contract,
+        origin_chain: 99,
+      };
+      currentTxHistory.push(currentTx);
+      window.localStorage.setItem(
+        "txHistory",
+        JSON.stringify(currentTxHistory)
+      );
     });
 
     polyProvider.on(
@@ -208,6 +266,7 @@ const Navbar = () => {
             dest_chain_id: Number(desChain),
             token_id: 0,
             contract: ICE[80001],
+            origin_chain: 0,
           };
           currentTxHistory.push(currentTx);
           window.localStorage.setItem(
@@ -251,6 +310,7 @@ const Navbar = () => {
             dest_chain_id: 80001,
             token_id: 0,
             contract: ICE[80001],
+            origin_chain: 0,
           };
           currentTxHistory.push(currentTx);
           window.localStorage.setItem(
@@ -294,6 +354,7 @@ const Navbar = () => {
             dest_chain_id: Number(desChain),
             token_id: tokenContract,
             contract: ICE[80001],
+            origin_chain: 2,
           };
           currentTxHistory.push(currentTx);
           window.localStorage.setItem(
@@ -337,6 +398,7 @@ const Navbar = () => {
             dest_chain_id: 80001,
             token_id: 0,
             contract: ICE[80001],
+            origin_chain: 2,
           };
           currentTxHistory.push(currentTx);
           window.localStorage.setItem(
