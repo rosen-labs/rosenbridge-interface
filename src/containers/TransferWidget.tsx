@@ -199,6 +199,7 @@ const TransferWidget = () => {
   const [keplrBalance, setKeplrBalance] = useState<number>(0);
   const [recipient, setRecipient] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [feeUnit, setFeeUnit] = useState("ICE");
   const modalContext = useModalContext();
   const appContext = useAppContext();
   const tokenContract = useERC20(
@@ -264,9 +265,7 @@ const TransferWidget = () => {
           ? recipient + `___${Date.now()}`
           : recipient,
         desChainId,
-        desChainId === 0
-          ? 100
-          : ethers.utils.parseEther(tokenAmount?.toString())
+        ethers.utils.parseEther(tokenAmount.toString())
       );
       setLoading(true);
       await tx.wait();
@@ -274,53 +273,62 @@ const TransferWidget = () => {
       console.error(e);
     } finally {
       setLoading(false);
+      setTokenAmount(0);
     }
   }, [tokenContract, tokenAmount]);
 
   const onSubmitToBridgeFromCosmos = useCallback(async () => {
-    const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
-    const accounts = await offlineSigner.getAccounts();
-    const desChainId: number = mapChainNameCosmosToChainId(
-      appContext.state.selectedToChain?.name
-    );
-    const registry = new Registry();
-    registry.register(
-      "/rosen_labs.xchain.xchain.MsgBridgeRequest",
-      MsgBridgeRequest
-    );
-    const options = {
-      registry: registry,
-      prefix: "xchain",
-    };
-    const client = await SigningStargateClient.connectWithSigner(
-      "http://165.232.162.158:26657",
-      offlineSigner,
-      options
-    );
+    try {
+      setLoading(true);
+      const offlineSigner = window.getOfflineSigner(COSMOS_CHAIN_ID);
+      const accounts = await offlineSigner.getAccounts();
+      const desChainId: number = mapChainNameCosmosToChainId(
+        appContext.state.selectedToChain?.name
+      );
+      const registry = new Registry();
+      registry.register(
+        "/rosen_labs.xchain.xchain.MsgBridgeRequest",
+        MsgBridgeRequest
+      );
+      const options = {
+        registry: registry,
+        prefix: "xchain",
+      };
+      const client = await SigningStargateClient.connectWithSigner(
+        "http://165.232.162.158:26657",
+        offlineSigner,
+        options
+      );
 
-    const value: MsgBridgeRequest = {
-      signer: accounts[0].address,
-      reciever: recipient + `___${Date.now()}`,
-      amount: 100,
-      fee: 0,
-      destChainId: desChainId,
-    };
+      const value: MsgBridgeRequest = {
+        signer: accounts[0].address,
+        reciever: recipient + `___${Date.now()}`,
+        amount: Number(tokenAmount),
+        fee: 0,
+        destChainId: desChainId,
+      };
 
-    const msg = {
-      typeUrl: "/rosen_labs.xchain.xchain.MsgBridgeRequest",
-      value,
-    };
-    const fee = {
-      amount: coins(1, "token"),
-      gas: "180000",
-    };
+      const msg = {
+        typeUrl: "/rosen_labs.xchain.xchain.MsgBridgeRequest",
+        value,
+      };
+      const fee = {
+        amount: coins(1, "token"),
+        gas: "180000",
+      };
 
-    await client.signAndBroadcast(
-      accounts[0].address,
-      [msg],
-      fee,
-      "TODO: Change This"
-    );
+      await client.signAndBroadcast(
+        accounts[0].address,
+        [msg],
+        fee,
+        "TODO: Change This"
+      );
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+      setTokenAmount(0);
+    }
   }, [tokenContract, tokenAmount]);
 
   useEffect(() => {
@@ -352,6 +360,19 @@ const TransferWidget = () => {
     };
     getKeplr();
   }, [appContext.state.walletInfo]);
+
+  useEffect(() => {
+    if (appContext.state.walletInfo?.type === WalletType.KEPLR) {
+      setFeeUnit("ICE");
+      return;
+    } else {
+      if (chainId === 80001) {
+        setFeeUnit("Matic");
+      } else {
+        setFeeUnit("One");
+      }
+    }
+  }, [appContext.state.walletInfo, account, library]);
 
   return (
     <Container>
@@ -457,18 +478,14 @@ const TransferWidget = () => {
         </SelectChain>
       </Grid>
       <GasPrice>
-        Current Gas Price: 0.001{" "}
-        {appContext.state.selectedToChain &&
-        appContext.state.selectedToChain.name === "Polygon"
-          ? "Matic"
-          : "One"}{" "}
-        (~ 10.23$)
+        Current Gas Price: 0.001 {feeUnit}
+        (~ 0.001$)
       </GasPrice>
       <TransactionDetails>
         <h3>Tranasction Details</h3>
         <div>
           <div>Estimated Fees</div>
-          <div>0 {tokenContract?.symbol} (~ 0$)</div>
+          <div>0 {feeUnit} (~ 0$)</div>
         </div>
         <div>
           <div>Estimated Received</div>
