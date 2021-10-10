@@ -11,10 +11,10 @@ import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { WalletType } from "../types/wallet";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
-import { MsgSendMsgMintRequest } from "../protos/tx";
 import useInactiveListener from "../hooks/useInactiveListener";
 import { injected } from "../constants/connectors";
 import { MsgBridgeRequest } from "../protos/bridge";
+import { notification } from "antd";
 
 const ModalStyle = {
   overlay: {
@@ -104,10 +104,19 @@ const ConnectWalletModal = () => {
   const modalContext = useModalContext();
   const appContext = useAppContext();
   const { activate, error } = useWeb3React();
+  const [api, contextHolder] = notification.useNotification();
 
   const connectToKepler = async () => {
     if (!window.getOfflineSigner || !window.keplr) {
-      // TODO: Display error message to user
+      modalContext.dispatch({
+        type: ModalActionType.SET_CONNECT_WALLET_MODAL_STATE,
+        payload: false,
+      });
+      api.warning({
+        message: `Keplr Extension Not Found`,
+        description: `Plese install Keplr extension`,
+        placement: "bottomRight",
+      });
       return;
     }
 
@@ -259,7 +268,11 @@ const ConnectWalletModal = () => {
 
   useEffect(() => {
     if (error && error.name === "UnsupportedChainIdError") {
-      //TODO error when not support chain
+      api.error({
+        message: `Network Unnsupported`,
+        description: `Please change the network to Polygon Mumbai Testnet, Harmony One Testnet, or ICE Chain Mainnet`,
+        placement: "bottomRight",
+      });
     }
   }, [error]);
 
@@ -273,6 +286,7 @@ const ConnectWalletModal = () => {
 
   return (
     <>
+      {contextHolder}
       <Modal
         style={ModalStyle}
         isOpen={modalContext.state.isConnectWalletModalOpen}
@@ -333,6 +347,6 @@ const ConnectWalletModal = () => {
       </Modal>
     </>
   );
-};;
+};
 
 export default ConnectWalletModal;

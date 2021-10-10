@@ -11,15 +11,25 @@ export const formatWalletAddress = (walletInfo: WalletInfo | null): string => {
       "..." +
       walletInfo.address.substr(length - 6, 6)
     );
-  } else if(walletInfo.type === WalletType.METAMASK) {
+  } else if (walletInfo.type === WalletType.METAMASK) {
     const length = walletInfo.address.length;
     return (
-      walletInfo.address.substr(0, 13) +
+      walletInfo.address.substr(0, 6) +
       "..." +
-      walletInfo.address.substr(length - 6, 6)
+      walletInfo.address.substr(length - 4, 4)
     );
   }
   return walletInfo.address;
+};
+export const formatAddress = (address: string | null | undefined): string => {
+  if (!address) return "NO ADDRESS";
+  if (address.includes("cosmos")) {
+    const length = address.length;
+    return address.substr(0, 13) + "..." + address.substr(length - 6, 6);
+  } else {
+    const length = address.length;
+    return address.substr(0, 6) + "..." + address.substr(length - 4, 4);
+  }
 };
 
 export const getTokenLogoURL = (address: string): string => {
@@ -29,16 +39,6 @@ export const getTokenLogoURL = (address: string): string => {
   if (imageURL) return imageURL;
 
   return `https://via.placeholder.com/30`;
-};
-
-export const shortAddress = (address: string | null | undefined): string => {
-  if (!address) return "0x";
-  const length = address.length;
-    return (
-      address.substr(0, 13) +
-      "..." +
-      address.substr(length - 6, 6)
-    );
 };
 
 export const mapChainNameToChainId = (

@@ -3,14 +3,18 @@ import { useWeb3React } from "@web3-react/core";
 import { DownOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { PrimaryBlockButton } from "../common/buttons";
+import { DisabledButton, PrimaryBlockButton } from "../common/buttons";
 import { colors, darkBlueTemplate, withOpacity } from "../utils/styled";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { useERC20 } from "../hooks/useERC20";
 import { ICE } from "../constants/Token";
 import { BRIDGE } from "../constants/Contract";
-import { shortAddress, mapChainNameToChainId } from "../utils/helper";
+import {
+  mapChainNameToChainId,
+  formatWalletAddress,
+  formatAddress,
+} from "../utils/helper";
 import BridgeABI from "../constants/abi/Bridge.json";
 import { useAppContext } from "../context/app/appContext";
 import { WalletType } from "../types/wallet";
@@ -188,7 +192,7 @@ const TransferWidget = () => {
   const [isEditRecipient, setIsEditRecipient] = useState(false);
   const [isBridgeApproved, setIsBridgeApproved] = useState(false);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
-  const [recipient, setRecipient] = useState("");
+  const [recipient, setRecipient] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const modalContext = useModalContext();
   const appContext = useAppContext();
@@ -197,6 +201,20 @@ const TransferWidget = () => {
     account,
     library
   );
+
+  useEffect(() => {
+    const { selectedFromChain, selectedToChain } = appContext.state;
+    if (
+      (selectedFromChain?.name == "Polygon" ||
+        selectedFromChain?.name == "Harmony One") &&
+      (selectedToChain?.name == "Polygon" ||
+        selectedToChain?.name == "Harmony One")
+    ) {
+      setRecipient(appContext.state.walletInfo?.address);
+    } else {
+      setRecipient(null);
+    }
+  }, [appContext.state.selectedFromChain, appContext.state.selectedToChain]);
 
   useEffect(() => {
     if (!tokenContract || !account) return;
@@ -257,10 +275,12 @@ const TransferWidget = () => {
         <div style={{ marginBottom: 5 }}>
           <SelectToken
             onClick={() => {
-              modalContext.dispatch({
-                type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
-                payload: true,
-              });
+              if (appContext.state.walletInfo) {
+                modalContext.dispatch({
+                  type: ModalActionType.SET_SELECT_TOKEN_MODAL_STATE,
+                  payload: true,
+                });
+              }
             }}
           >
             {!appContext.state.selectedToken && (
@@ -308,10 +328,12 @@ const TransferWidget = () => {
       <Grid>
         <SelectChain
           onClick={() => {
-            modalContext.dispatch({
-              type: ModalActionType.SET_SELECT_FROM_CHAIN_MODAL_STATE,
-              payload: true,
-            });
+            if (appContext.state.walletInfo) {
+              modalContext.dispatch({
+                type: ModalActionType.SET_SELECT_FROM_CHAIN_MODAL_STATE,
+                payload: true,
+              });
+            }
           }}
         >
           <span>From</span>
@@ -330,10 +352,12 @@ const TransferWidget = () => {
         </SelectChain>
         <SelectChain
           onClick={() => {
-            modalContext.dispatch({
-              type: ModalActionType.SET_SELECT_TO_CHAIN_MODAL_STATE,
-              payload: true,
-            });
+            if (appContext.state.walletInfo) {
+              modalContext.dispatch({
+                type: ModalActionType.SET_SELECT_TO_CHAIN_MODAL_STATE,
+                payload: true,
+              });
+            }
           }}
         >
           <span>To</span>
@@ -373,7 +397,7 @@ const TransferWidget = () => {
         </div>
         <div>
           <div>Sender</div>
-          <div>{formatWalletAddress(appContext.state.walletInfo)}</div>
+          <div>{formatAddress(appContext.state.walletInfo?.address)}</div>
         </div>
         <div>
           <div>Recipient</div>
@@ -381,13 +405,15 @@ const TransferWidget = () => {
             {!isEditRecipient && (
               <EditButton
                 onClick={() => {
-                  setIsEditRecipient(true);
+                  if (appContext.state.walletInfo) {
+                    setIsEditRecipient(true);
+                  }
                 }}
               >
                 <EditOutlined /> Edit
               </EditButton>
             )}
-            {formatWalletAddress(appContext.state.walletInfo)}
+            {formatAddress(recipient)}
           </div>
         </div>
       </TransactionDetails>
@@ -401,7 +427,35 @@ const TransferWidget = () => {
           />
         </RecipientInput>
       )}
-      {!appContext.state.walletInfo ? (
+      {appContext.state.walletInfo && (
+        <>
+          {!isBridgeApproved ? (
+            <>
+              {appContext.state.selectedToken && (
+                <PrimaryBlockButton onClick={onTokenApprove}>
+                  Approve {tokenContract?.symbol} {loading && "..."}
+                </PrimaryBlockButton>
+              )}
+              {!appContext.state.selectedToken && (
+                <DisabledButton>Confirm Transaction</DisabledButton>
+              )}
+            </>
+          ) : (
+            <>
+              {appContext.state.selectedFromChain &&
+              appContext.state.selectedToChain &&
+              recipient ? (
+                <PrimaryBlockButton onClick={onSubmitToBridge}>
+                  Confirm Transaction
+                </PrimaryBlockButton>
+              ) : (
+                <DisabledButton>Confirm Transaction</DisabledButton>
+              )}
+            </>
+          )}
+        </>
+      )}
+      {!appContext.state.walletInfo && (
         <PrimaryBlockButton
           onClick={() => {
             modalContext.dispatch({
@@ -410,16 +464,7 @@ const TransferWidget = () => {
             });
           }}
         >
-          Connect Wallet
-        </PrimaryBlockButton>
-      ) : !isBridgeApproved &&
-        appContext.state.walletInfo?.type !== WalletType.KEPLR ? (
-        <PrimaryBlockButton onClick={onTokenApprove}>
-          Approve {tokenContract?.symbol} {loading && "..."}
-        </PrimaryBlockButton>
-      ) : (
-        <PrimaryBlockButton onClick={onSubmitToBridge}>
-          Confirm Transaction {loading && "..."}
+          Connect to a wallet
         </PrimaryBlockButton>
       )}
     </Container>
