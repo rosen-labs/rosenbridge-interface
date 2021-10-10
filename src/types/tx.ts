@@ -1,5 +1,5 @@
 export interface TransactionHistory {
-  uid: string;
+  UID: string;
   event_name: string;
   reciever: string;
   amount: number;

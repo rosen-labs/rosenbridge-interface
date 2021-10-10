@@ -2890,6 +2890,13 @@
     "@types/webpack-sources" "*"
     "source-map" "^0.6.0"
 
+"@types/ws@^8.2.0":
+  "integrity" "sha512-cyeefcUCgJlEk+hk2h3N+MqKKsPViQgF5boi9TTHSK+PoR9KWBb/C5ccPcDyAqgsbAYHTwulch725DV84+pSpg=="
+  "resolved" "https://registry.npmjs.org/@types/ws/-/ws-8.2.0.tgz"
+  "version" "8.2.0"
+  dependencies:
+    "@types/node" "*"
+
 "@types/yargs-parser@*":
   "integrity" "sha512-37RSHht+gzzgYeobbG+KWryeAW8J33Nhr69cjTqSYymXVZEN9NbRYWoYlRtDhHKPVT1FyNKwaTPC1NynKZpzRA=="
   "resolved" "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-20.2.0.tgz"
@@ -15043,12 +15050,10 @@
     "signal-exit" "^3.0.2"
     "typedarray-to-buffer" "^3.1.5"
 
-"ws@*", "ws@^6.2.1":
-  "integrity" "sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA=="
-  "resolved" "https://registry.npmjs.org/ws/-/ws-6.2.1.tgz"
-  "version" "6.2.1"
-  dependencies:
-    "async-limiter" "~1.0.0"
+"ws@*":
+  "integrity" "sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA=="
+  "resolved" "https://registry.npmjs.org/ws/-/ws-8.2.3.tgz"
+  "version" "8.2.3"
 
 "ws@^3.0.0":
   "integrity" "sha512-nnWLa/NwZSt4KQJu51MYlCcSQ5g7INpOrOMt4XV8j4dqTXdmlUmSHQ8/oLC069ckre0fRsgfvsKwbTdtKLCDkA=="
@@ -15058,6 +15063,13 @@
     "async-limiter" "~1.0.0"
     "safe-buffer" "~5.1.0"
     "ultron" "~1.1.0"
+
+"ws@^6.2.1":
+  "integrity" "sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw=="
+  "resolved" "https://registry.npmjs.org/ws/-/ws-6.2.2.tgz"
+  "version" "6.2.2"
+  dependencies:
+    "async-limiter" "~1.0.0"
 
 "ws@^7.2.3":
   "integrity" "sha512-hr6vCR76GsossIRsr8OLR9acVVm1jyfEWvhbNjtgPOrfvAlKzvyeg/P6r8RuDjRyrcQoPQT7K0DGEPc7Ae6jzA=="
