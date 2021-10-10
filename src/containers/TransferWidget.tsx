@@ -18,7 +18,6 @@ import {
 import BridgeABI from "../constants/abi/Bridge.json";
 import { useAppContext } from "../context/app/appContext";
 import { WalletType } from "../types/wallet";
-import { formatWalletAddress } from "../utils/helper";
 
 const Container = styled.div`
   background: white;

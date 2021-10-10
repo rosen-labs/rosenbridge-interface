@@ -1,10 +1,12 @@
 import styled, { keyframes } from "styled-components";
+import Web3 from "web3";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useModalContext } from "../context/modal/modalContext";
 import { ModalActionType } from "../context/modal/modalReducer";
 import { AppActionType } from "../context/app/appReducer";
 import { WalletType } from "../types/wallet";
+import { TransactionHistory, EventTxType } from "../types/tx";
 import { colors } from "../utils/styled";
 import { SigningCosmosClient } from "@cosmjs/launchpad";
 import { useEffect } from "react";
@@ -12,7 +14,10 @@ import { useAppContext } from "../context/app/appContext";
 import { formatWalletAddress } from "../utils/helper";
 import { POLY_WSS, HARMONY_WSS, ROSEN_WSS } from "../constants/Rpc";
 import { BRIDGE } from "../constants/Contract";
+import { ICE } from "../constants/Token";
 import { Button } from "../common/buttons";
+
+const web3 = new Web3();
 
 const polyProvider = new ethers.providers.WebSocketProvider(POLY_WSS);
 const harmonyProvider = new ethers.providers.WebSocketProvider(HARMONY_WSS);
@@ -128,18 +133,84 @@ const Navbar = () => {
       },
       async (result) => {
         const { data, topics } = result;
-        const decodeData = ethers.utils.defaultAbiCoder.decode(
-          ["address", "string", "uint256", "uint256"],
-          data
-        );
+        const eventName = topics[0];
 
-        const tokenContract = decodeData[0];
-        const reciever = decodeData[1].toString();
-        const sourceChain = decodeData[2].toString();
-        const amount = decodeData[3].toString();
-        const desChain = parseInt(topics[2], 16);
+        if (eventName === EventTxType.SENT_TO_CHAIN) {
+          const decodeData = ethers.utils.defaultAbiCoder.decode(
+            ["address", "string", "uint256", "uint256"],
+            data
+          );
 
-        console.log(result);
+          const tokenContract = decodeData[0];
+          const reciever = decodeData[1].toString();
+          const sourceChain = decodeData[2].toString();
+          const amount = decodeData[3].toString();
+          const desChain = parseInt(topics[2], 16);
+
+          const prevTxHistory: string | null =
+            window.localStorage.getItem("txHistory") ?? JSON.stringify("[]");
+          const currentTxHistory: TransactionHistory[] | any =
+            JSON.parse(prevTxHistory);
+          const currentTx: TransactionHistory = {
+            uid: result.transactionHash,
+            event_name: eventName,
+            reciever: reciever,
+            amount: Number(amount),
+            fee: 0,
+            src_chain_id: Number(sourceChain),
+            dest_chain_id: Number(desChain),
+            token_id: 0,
+            contract: ICE[80001],
+          };
+          currentTxHistory.push(currentTx);
+          window.localStorage.setItem(
+            "txHistory",
+            JSON.stringify(currentTxHistory)
+          );
+        } else {
+          const decodeData = ethers.utils.defaultAbiCoder.decode(
+            ["uint256"],
+            data
+          );
+          const amount = decodeData[0].toString();
+          const tokenContract = "0x".concat(
+            topics[1]
+              .toString()
+              .slice(
+                topics[1].toString().length - 40,
+                topics[1].toString().length
+              )
+          );
+          const reciever = "0x".concat(
+            topics[2]
+              .toString()
+              .slice(
+                topics[2].toString().length - 40,
+                topics[2].toString().length
+              )
+          );
+
+          const prevTxHistory: string | null =
+            window.localStorage.getItem("txHistory") ?? JSON.stringify("[]");
+          const currentTxHistory: TransactionHistory[] | any =
+            JSON.parse(prevTxHistory);
+          const currentTx: TransactionHistory = {
+            uid: result.transactionHash,
+            event_name: eventName,
+            reciever: reciever,
+            amount: Number(amount),
+            fee: 0,
+            src_chain_id: 0,
+            dest_chain_id: 80001,
+            token_id: 0,
+            contract: ICE[80001],
+          };
+          currentTxHistory.push(currentTx);
+          window.localStorage.setItem(
+            "txHistory",
+            JSON.stringify(currentTxHistory)
+          );
+        }
       }
     );
     harmonyProvider.on(
@@ -148,18 +219,84 @@ const Navbar = () => {
       },
       async (result) => {
         const { data, topics } = result;
-        const decodeData = ethers.utils.defaultAbiCoder.decode(
-          ["address", "string", "uint256", "uint256"],
-          data
-        );
+        const eventName = topics[0];
 
-        const tokenContract = decodeData[0];
-        const reciever = decodeData[1].toString();
-        const sourceChain = decodeData[2].toString();
-        const amount = decodeData[3].toString();
-        const desChain = parseInt(topics[2], 16);
+        if (eventName === EventTxType.SENT_TO_CHAIN) {
+          const decodeData = ethers.utils.defaultAbiCoder.decode(
+            ["address", "string", "uint256", "uint256"],
+            data
+          );
 
-        console.log(result);
+          const tokenContract = decodeData[0];
+          const reciever = decodeData[1].toString();
+          const sourceChain = decodeData[2].toString();
+          const amount = decodeData[3].toString();
+          const desChain = parseInt(topics[2], 16);
+
+          const prevTxHistory: string | null =
+            window.localStorage.getItem("txHistory") ?? JSON.stringify("[]");
+          const currentTxHistory: TransactionHistory[] | any =
+            JSON.parse(prevTxHistory);
+          const currentTx: TransactionHistory = {
+            uid: result.transactionHash,
+            event_name: eventName,
+            reciever: reciever,
+            amount: Number(amount),
+            fee: 0,
+            src_chain_id: Number(sourceChain),
+            dest_chain_id: Number(desChain),
+            token_id: tokenContract,
+            contract: ICE[80001],
+          };
+          currentTxHistory.push(currentTx);
+          window.localStorage.setItem(
+            "txHistory",
+            JSON.stringify(currentTxHistory)
+          );
+        } else {
+          const decodeData = ethers.utils.defaultAbiCoder.decode(
+            ["uint256"],
+            data
+          );
+          const amount = decodeData[0].toString();
+          const tokenContract = "0x".concat(
+            topics[1]
+              .toString()
+              .slice(
+                topics[1].toString().length - 40,
+                topics[1].toString().length
+              )
+          );
+          const reciever = "0x".concat(
+            topics[2]
+              .toString()
+              .slice(
+                topics[2].toString().length - 40,
+                topics[2].toString().length
+              )
+          );
+
+          const prevTxHistory: string | null =
+            window.localStorage.getItem("txHistory") ?? JSON.stringify("[]");
+          const currentTxHistory: TransactionHistory[] | any =
+            JSON.parse(prevTxHistory);
+          const currentTx: TransactionHistory = {
+            uid: result.transactionHash,
+            event_name: eventName,
+            reciever: reciever,
+            amount: Number(amount),
+            fee: 0,
+            src_chain_id: 0,
+            dest_chain_id: 80001,
+            token_id: 0,
+            contract: ICE[80001],
+          };
+          currentTxHistory.push(currentTx);
+          window.localStorage.setItem(
+            "txHistory",
+            JSON.stringify(currentTxHistory)
+          );
+        }
       }
     );
   }, []);
